@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import CategoryIcon from '@mui/icons-material/Category';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import ReceiptIcon from '@mui/icons-material/Receipt';
@@ -8,16 +8,19 @@ import HistoryIcon from '@mui/icons-material/History';
 import BusinessIcon from '@mui/icons-material/Business';
 import ReportIcon from '@mui/icons-material/Assessment';
 import SettingsIcon from '@mui/icons-material/Settings';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 const Sidebar = ({ open, isMinimized }) => {
   const drawerWidth = isMinimized ? 70 : 240;
   const navigate = useNavigate();
+  const location = useLocation();
 
   const navigateToPage = (path) => {
     navigate(path);
   };
 
   const menuItems = [
+    { label: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
     { label: 'Category', path: '/category', icon: <CategoryIcon /> },
     { label: 'Item', path: '/item', icon: <InventoryIcon /> },
     { label: 'Bill', path: '/bill', icon: <ReceiptIcon /> },
@@ -57,6 +60,7 @@ const Sidebar = ({ open, isMinimized }) => {
               justifyContent: isMinimized ? 'center' : 'initial',
               px: isMinimized ? 1 : 2,
               py: 2,
+              backgroundColor: location.pathname === item.path ? '#444' : 'transparent', // Highlight active item
               '&:hover': {
                 backgroundColor: '#555',
               },
@@ -68,7 +72,7 @@ const Sidebar = ({ open, isMinimized }) => {
                 minWidth: 0,
                 mr: isMinimized ? 0 : 2,
                 justifyContent: 'center',
-                color: '#fff',
+                color: location.pathname === item.path ? '#4caf50' : '#fff', // Highlight icon
                 transition: 'margin 0.3s ease',
               }}
             >
@@ -78,7 +82,7 @@ const Sidebar = ({ open, isMinimized }) => {
               <ListItemText
                 primary={item.label}
                 sx={{
-                  color: '#fff',
+                  color: location.pathname === item.path ? '#4caf50' : '#fff', // Highlight text
                   opacity: isMinimized ? 0 : 1,
                   transition: 'opacity 0.3s ease, margin 0.3s ease',
                   marginLeft: isMinimized ? '0px' : '10px',

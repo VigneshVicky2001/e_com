@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Divider, Autocomplete, TextField, Table, TableBody, TableCell, TableHead, TableRow, Box, Typography, Paper, IconButton, TableContainer, Button, FormControl } from '@mui/material';
+import { Divider, Autocomplete, TextField, Table, TableBody, TableCell, TableHead, TableRow, Box, Typography, Paper, IconButton, TableContainer, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { Delete, AddCircleOutline, RemoveCircleOutline } from '@mui/icons-material';
 import { getAllItems } from '../../Service/ItemApi';
 import { addBill } from '../../Service/BillApi';
@@ -13,7 +13,6 @@ const AddBill = () => {
   const [customerPhoneNumber, setCustomerPhoneNumber] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [discountPercentage, setDiscountPercentage] = useState(0);
-  const [discountAmount, setDiscountAmount] = useState(0);
 
   useEffect(() => {
     fetchItems();
@@ -124,79 +123,79 @@ const AddBill = () => {
   return (
     <Box sx={{ display: 'flex', padding: '40px', gap: 4, flexWrap: 'wrap' }}>
       <Paper sx={{ flex: '3', padding: 4, backgroundColor: '#f9f9f9', boxShadow: 3, borderRadius: 4 }}>
-        <TableContainer sx={{ marginTop: 4 }}>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow sx={{ backgroundColor: '#f1f1f1' }}>
-                <TableCell sx={{ fontWeight: 'bold' }}>Item Details</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Stock Qty</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Quantity</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Price</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Total</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Delete?</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {cart.map((cartItem, index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    <Autocomplete
-                      options={items}
-                      getOptionLabel={(option) => `${option.name} - ₹${option.sellingPrice}`}
-                      value={cartItem.item}
-                      disableClearable
-                      onChange={(event, value) => handleItemSelect(index, value)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label={cartItem.item ? '' : 'Select Product'}
-                          variant="outlined"
-                          fullWidth
-                          InputProps={{
-                            ...params.InputProps,
-                            sx: {
-                              height: '40px',
-                              padding: '0 12px',
-                              fontSize: '0.875rem',
-                              display: 'flex',
-                              alignItems: 'center',
-                            },
-                          }}
-                          InputLabelProps={{
-                            sx: {
-                              fontSize: '0.75rem',
-                              lineHeight: '1.1',
-                              top: '-2px',
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                  </TableCell>
-                  <TableCell>{cartItem.stockQuantity}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleQuantityChange(index, -1)}>
-                      <RemoveCircleOutline />
-                    </IconButton>
-                    {cartItem.quantity}
-                    <IconButton onClick={() => handleQuantityChange(index, 1)}>
-                      <AddCircleOutline />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell>₹{cartItem.rate}</TableCell>
-                  <TableCell>₹{cartItem.total}</TableCell>
-                  <TableCell>
-                    {cart.length > 1 && cartItem.item && (
-                      <IconButton onClick={() => handleRemoveItem(index)}>
-                        <Delete />
-                      </IconButton>
+      <TableContainer sx={{ marginTop: 4 }}>
+        <Table stickyHeader sx={{ tableLayout: 'fixed', width: '100%' }}>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: '#f1f1f1' }}>
+              <TableCell sx={{ fontWeight: 'bold', minWidth: 150, width: '30%' }}>Item Details</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', minWidth: 100, width: '15%' }}>Stock Qty</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', minWidth: 100, width: '15%', paddingLeft: '30px' }}>Quantity</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', minWidth: 100, width: '15%' }}>Price</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', minWidth: 100, width: '15%' }}>Total</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', minWidth: 100, width: '10%' }}>Delete?</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {cart.map((cartItem, index) => (
+              <TableRow key={index}>
+                <TableCell>
+                  <Autocomplete
+                    options={items}
+                    getOptionLabel={(option) => `${option.name} - ₹${option.sellingPrice}`}
+                    value={cartItem.item}
+                    disableClearable
+                    onChange={(event, value) => handleItemSelect(index, value)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label={cartItem.item ? '' : 'Select Product'}
+                        variant="outlined"
+                        fullWidth
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            height: '40px',
+                            padding: '0 12px',
+                            fontSize: '0.875rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                          },
+                        }}
+                        InputLabelProps={{
+                          sx: {
+                            fontSize: '0.75rem',
+                            lineHeight: '1.1',
+                            top: '-2px',
+                          },
+                        }}
+                      />
                     )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                  />
+                </TableCell>
+                <TableCell>{cartItem.stockQuantity}</TableCell>
+                <TableCell>
+                  <IconButton onClick={() => handleQuantityChange(index, -1)}>
+                    <RemoveCircleOutline />
+                  </IconButton>
+                  {cartItem.quantity}
+                  <IconButton onClick={() => handleQuantityChange(index, 1)}>
+                    <AddCircleOutline />
+                  </IconButton>
+                </TableCell>
+                <TableCell>₹{cartItem.rate}</TableCell>
+                <TableCell>₹{cartItem.total}</TableCell>
+                <TableCell>
+                  {cart.length > 1 && cartItem.item && (
+                    <IconButton onClick={() => handleRemoveItem(index)}>
+                      <Delete />
+                    </IconButton>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
         <Box sx={{ marginTop: 4, padding: 2, borderRadius: 2, backgroundColor: '#ffffff', width: '40%', marginLeft: 'auto' }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 1 }}>
@@ -259,40 +258,92 @@ const AddBill = () => {
         </style>
       </Paper>
 
-      <Paper sx={{ flex: '1', padding: 4, boxShadow: 3, borderRadius: 4 }}>
-        <TextField
-          label="Customer Name"
-          value={customerName}
-          onChange={(e) => setCustomerName(e.target.value)}
-          fullWidth
-          required
-          sx={{ marginBottom: 2 }}
-        />
-        <TextField
-          label="Customer Phone Number"
-          value={customerPhoneNumber}
-          onChange={(e) => setCustomerPhoneNumber(e.target.value)}
-          fullWidth
-          sx={{ marginBottom: 2 }}
-        />
-        <FormControl fullWidth required sx={{ marginBottom: 2 }}>
-          <TextField
-            label="Payment Method"
-            value={paymentMethod}
-            onChange={(e) => setPaymentMethod(e.target.value)}
-            fullWidth
-          />
-        </FormControl>
+      <Paper sx={{ 
+        flex: '1', 
+        padding: 4, 
+        backgroundColor: '#f9f9f9', 
+        boxShadow: 3, 
+        borderRadius: 4, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: 2, 
+        alignItems: 'center'
+    }}>
+      <Typography variant="h6" sx={{ 
+        fontWeight: 'bold', 
+        marginBottom: 2, 
+        color: '#333' 
+      }}>
+        Customer Information
+      </Typography>
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleProceedToPayment}
+      <TextField
+        label="Customer Name"
+        value={customerName}
+        onChange={(e) => setCustomerName(e.target.value)}
+        fullWidth
+        required
+        sx={{
+          marginBottom: 2,
+          '& .MuiInputBase-root': {
+            backgroundColor: '#fff', 
+            borderRadius: 2,
+          },
+        }}
+      />
+
+      <TextField
+        label="Customer Phone Number"
+        value={customerPhoneNumber}
+        onChange={(e) => setCustomerPhoneNumber(e.target.value)}
+        fullWidth
+        sx={{
+          marginBottom: 2,
+          '& .MuiInputBase-root': {
+            backgroundColor: '#fff',
+            borderRadius: 2,
+          },
+        }}
+      />
+
+      <FormControl fullWidth required sx={{ marginBottom: 2 }}>
+        <InputLabel>Payment Method</InputLabel>
+        <Select
+          label="Payment Method"
+          value={paymentMethod}
+          onChange={(e) => setPaymentMethod(e.target.value)}
           fullWidth
+          sx={{
+            '& .MuiInputBase-root': {
+              backgroundColor: '#fff',
+              borderRadius: 2,
+            },
+          }}
         >
-          Proceed to Payment
-        </Button>
-      </Paper>
+          <MenuItem value="cash">Cash</MenuItem>
+          <MenuItem value="upi">UPI</MenuItem>
+          <MenuItem value="credit">Credit</MenuItem>
+        </Select>
+      </FormControl>
+
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleProceedToPayment}
+        fullWidth
+        sx={{
+          padding: '12px 0', 
+          fontSize: '1rem', 
+          fontWeight: 'bold', 
+          borderRadius: 2, 
+          backgroundColor: '#1976d2', 
+          '&:hover': { backgroundColor: '#1565c0' }, 
+        }}
+      >
+        Proceed to Payment
+      </Button>
+    </Paper>
+
     </Box>
   );
 };

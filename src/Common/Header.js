@@ -7,9 +7,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
 
 const GlassAppBar = styled(AppBar)(({ theme }) => ({
-  backgroundColor: 'rgba(0, 0, 0, 0.8)',
-  backdropFilter: 'blur(10px)',
-  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.4)',
+  backgroundColor: '#333',
+  // backdropFilter: 'blur(10px)',
+  // boxShadow: '0 4px 20px rgba(0, 0, 0, 0)',
   height: '70px',
   zIndex: 1300,
 }));
