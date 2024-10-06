@@ -37,7 +37,7 @@ export const getDistributorById = (distributorId) => {
 };
 
 export const getDistributorNameAndId = () => {
-    return baseApi.get('/distributor/getAllDistributorNameAndId')
+    return baseApi.get('/distributor/getAllDistributorIdAndName')
         .then(response => response.data)
         .catch(error => {
             console.error(error);

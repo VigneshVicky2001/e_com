@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, Card, CardContent, TextField, Typography, Avatar } from '@mui/material';
 import { styled } from '@mui/system';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import { saveStoreDetails } from '../Service/StoreDetails';
 
 const StyledCard = styled(Card)({
   maxWidth: 500,
@@ -61,19 +62,34 @@ const StyledButton = styled(Button)({
 
 const Settings = () => {
   const [orgName, setOrgName] = useState('');
+  const [orgNo, setOrgNo] = useState('');
+  const [orgAddress, setOrgAddress] = useState('');
   const [logo, setLogo] = useState(null);
 
+  
   const handleLogoChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setLogo(URL.createObjectURL(file));
+      setLogo(file);
     }
   };
 
-  const handleSaveChanges = () => {
-    console.log('Organization Name:', orgName);
-    console.log('Organization Logo:', logo);
+  const handleSaveChanges = async () => {
+    const data = new FormData();
+    data.append('name', orgName);
+    data.append('phoneNumber', orgNo);
+    data.append('address', orgAddress);
+    data.append('logo', logo);
+  
+    try {
+      const response = await saveStoreDetails(data);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
+  
 
   return (
     <StyledCard>
@@ -103,6 +119,22 @@ const Settings = () => {
           fullWidth
           value={orgName}
           onChange={(e) => setOrgName(e.target.value)}
+        />
+
+        <StyledTextField
+          label="Organization Number"
+          variant="outlined"
+          fullWidth
+          value={orgNo}
+          onChange={(e) => setOrgNo(e.target.value)}
+        />
+        
+        <StyledTextField
+          label="Organization Address"
+          variant="outlined"
+          fullWidth
+          value={orgAddress}
+          onChange={(e) => setOrgAddress(e.target.value)}
         />
 
         <StyledButton

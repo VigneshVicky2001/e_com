@@ -21,7 +21,7 @@ const Footer = () => {
       zIndex={1200}
     >
       <Typography variant="body2">
-        &copy; Brcde
+        &copy; Billing Application
       </Typography>
     </Box>
   );

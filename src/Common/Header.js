@@ -45,7 +45,7 @@ const Header = ({ toggleSidebar, showLogout }) => {
             flexGrow: 1,
           }}
         >
-          Barcode Scan
+          Billing Application
         </Typography>
 
         {showLogout && (
