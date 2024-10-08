@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tooltip, Chip, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
+import { Typography ,Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tooltip, Chip, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
 import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import BillDialog from './BillDialog';
 
@@ -20,7 +20,7 @@ const BillTable = ({ bills, sortBy, sortDirection, onSort, loading, error, payme
 
   return (
     <>
-      <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', mt: 2, maxHeight: 487, overflow: 'auto' }}>
+      <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', overflow: 'auto' }}>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
@@ -85,6 +85,14 @@ const BillTable = ({ bills, sortBy, sortDirection, onSort, loading, error, payme
               <TableRow>
                 <TableCell colSpan={8} align="center">
                   {error}
+                </TableCell>
+              </TableRow>
+            ) : bills.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8} align="center">
+                  <Typography variant="h6" color="textSecondary">
+                    No records found
+                  </Typography>
                 </TableCell>
               </TableRow>
             ) : (

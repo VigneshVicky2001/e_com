@@ -1,11 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogActions, DialogTitle, Button, DialogContent, Grid2, Typography, TextField, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+import React, { useState, useEffect, useRef } from 'react';
+import { Drawer, Button, Typography, TextField, Select, MenuItem, FormControl, Grid2, Box, FormHelperText } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { addItem, updateItem, getItemById } from '../../Service/ItemApi';
 import { getCategoriesDropdown } from '../../Service/CategoryApi';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { ItemValidation } from '../../Common/Validation';
+import CustomSnackbar, {successSnackbar, errorSnackbar} from '../../Common/Snackbar';
 
-function ItemDialogBox({ open, handleClose, itemId, onRefresh }) {
-  const { control, handleSubmit, register, reset, setValue } = useForm();
+function ItemDrawer({ open, handleClose, itemId, onRefresh }) {
+  const snackbarRef = useRef();
+  const { 
+    control, 
+    handleSubmit, 
+    register, 
+    reset, 
+    setValue,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(ItemValidation) });
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -22,25 +33,24 @@ function ItemDialogBox({ open, handleClose, itemId, onRefresh }) {
           categoryId: '',
         });
       }
-      catgoryDropdown();
+      categoryDropdown();
     }
   }, [itemId, open]);
 
   const fetchData = async () => {
     const data = await getItemById(itemId);
-    setValue("name", data?.name);
-    setValue("mrpPrice", data?.mrpPrice);
-    setValue("sellingPrice", data?.sellingPrice);
-    setValue("stockQuantity", data?.stockQuantity);
-    setValue("status", data?.status);
-    setValue("categoryId", data?.categoryId);
-  }
-  
-    const catgoryDropdown = async () => {
-      getCategoriesDropdown().then(response => {
-        console.log('Raw API Response:', response);
+    setValue('name', data?.name);
+    setValue('mrpPrice', data?.mrpPrice);
+    setValue('sellingPrice', data?.sellingPrice);
+    setValue('stockQuantity', data?.stockQuantity);
+    setValue('status', data?.status);
+    setValue('categoryId', data?.categoryId);
+  };
+
+  const categoryDropdown = async () => {
+    getCategoriesDropdown()
+      .then(response => {
         if (response && Array.isArray(response)) {
-          console.log('Categories:', response);
           setCategories(response);
         } else {
           console.error('No data found in API response.');
@@ -49,9 +59,9 @@ function ItemDialogBox({ open, handleClose, itemId, onRefresh }) {
       .catch(error => {
         console.error('Error fetching categories:', error);
       });
-    };
+  };
 
-  const handleFormSubmit = (data) => {
+  const handleFormSubmit = data => {
     const updatePayload = {
       id: itemId,
       name: data?.name,
@@ -71,47 +81,68 @@ function ItemDialogBox({ open, handleClose, itemId, onRefresh }) {
       categoryId: data?.categoryId,
     };
 
-    if(itemId){
+    if (itemId) {
       updateItem(updatePayload)
-      .then((response) => {
-        if (response?.error?.data?.message) {
-          alert("Error", `${response.error.data.message}`, "");
-        } else {
-          alert("Success");
-          onRefresh();
-          reset();
-          handleClose();
-        }
-      })
-      .catch((error) => {
-        alert("ERROR LOL");
-      });
-    } else {
-      addItem(createPayload)
-        .then((response) => {
+        .then(response => {
           if (response?.error?.data?.message) {
-            alert("Error", `${response.error.data.message}`, "");
+            errorSnackbar(`Error: ${response.error.data.message}`);
           } else {
-            alert("Success");
+            successSnackbar('Success');
             onRefresh();
             reset();
             handleClose();
           }
         })
-        .catch((error) => {
-          alert("ERROR LOL");
+        .catch(error => {
+          errorSnackbar('ERROR bro');
         });
-      }
+    } else {
+      addItem(createPayload)
+        .then(response => {
+          if (response?.error?.data?.message) {
+            errorSnackbar(`Error: ${response.error.data.message}`);
+          } else {
+            successSnackbar('Success');
+            onRefresh();
+            reset();
+            handleClose();
+          }
+        })
+        .catch(error => {
+          errorSnackbar('ERROR bro');
+        });
+    }
   };
 
   return (
-    <Dialog fullWidth maxWidth="sm" open={open} onClose={handleClose} sx={{ borderRadius: "10px" }}>
-      <DialogTitle>Add Item</DialogTitle>
-      <DialogContent sx={{ paddingRight: 0, paddingLeft: 8 }} className='custom-scrollbar'>
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          sx: {
+            width: 400,
+            padding: 3,
+            boxShadow: 3,
+            backgroundColor: '#1f1f1f',
+            color: '#fff',
+            borderRadius: "8px"
+          },
+        }}
+        BackdropProps={{
+          sx: {
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(5px)',
+          },
+        }}
+      >
+        <Typography variant="h5" sx={{ marginBottom: 2, color: "#fff" }}>
+          {itemId ? 'Edit Item' : 'Add Item'}
+        </Typography>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
-          <Grid2 container spacing={2} sx={{ width: "92%" }}>
-            <Grid2 xs={6}>
-              <Typography>Name</Typography>
+          <Grid2  container direction="column" spacing={2}>
+            <Grid2 xs={12}>
+              <Typography variant="body1" sx={{ color: '#ccc' }}>Name</Typography>
               <Controller
                 name="name"
                 control={control}
@@ -119,18 +150,25 @@ function ItemDialogBox({ open, handleClose, itemId, onRefresh }) {
                 render={({ field }) => (
                   <TextField
                     type="text"
-                    {...register("name")}
+                    {...register('name')}
                     placeholder="Enter name"
                     {...field}
                     size="small"
                     fullWidth
+                    sx={{
+                      input: { color: '#fff' },
+                      backgroundColor: '#333',
+                      borderRadius: '4px',
+                    }}
+                    helperText={errors.name?.message}
+                    error={!!errors.name}
                   />
                 )}
               />
             </Grid2>
 
             <Grid2 xs={6}>
-              <Typography>MRP</Typography>
+              <Typography variant="body1" sx={{ color: '#ccc' }}>MRP</Typography>
               <Controller
                 name="mrpPrice"
                 control={control}
@@ -138,20 +176,25 @@ function ItemDialogBox({ open, handleClose, itemId, onRefresh }) {
                 render={({ field }) => (
                   <TextField
                     type="number"
-                    {...register("mrpPrice")}
+                    {...register('mrpPrice')}
                     placeholder="Enter MRP"
                     {...field}
                     size="small"
                     fullWidth
+                    sx={{
+                      input: { color: '#fff' },
+                      backgroundColor: '#333',
+                      borderRadius: '4px',
+                    }}
+                    helperText={errors.mrpPrice?.message}
+                    error={!!errors.mrpPrice}
                   />
                 )}
               />
             </Grid2>
-          </Grid2>
 
-          <Grid2 container spacing={2} sx={{ marginTop: "20px", width: "92%" }}>
             <Grid2 xs={6}>
-              <Typography>GST</Typography>
+              <Typography variant="body1" sx={{ color: '#ccc' }}>Selling Price</Typography>
               <Controller
                 name="sellingPrice"
                 control={control}
@@ -159,18 +202,25 @@ function ItemDialogBox({ open, handleClose, itemId, onRefresh }) {
                 render={({ field }) => (
                   <TextField
                     type="number"
-                    {...register("sellingPrice")}
+                    {...register('sellingPrice')}
                     placeholder="Enter Selling Price"
                     {...field}
                     size="small"
                     fullWidth
+                    sx={{
+                      input: { color: '#fff' },
+                      backgroundColor: '#333',
+                      borderRadius: '4px',
+                    }}
+                    helperText={errors.sellingPrice?.message}
+                    error={!!errors.sellingPrice}
                   />
                 )}
               />
             </Grid2>
 
             <Grid2 xs={6}>
-              <Typography>Stock Qty</Typography>
+              <Typography variant="body1" sx={{ color: '#ccc' }}>Stock Quantity</Typography>
               <Controller
                 name="stockQuantity"
                 control={control}
@@ -178,96 +228,130 @@ function ItemDialogBox({ open, handleClose, itemId, onRefresh }) {
                 render={({ field }) => (
                   <TextField
                     type="number"
-                    {...register("stockQuantity")}
+                    {...register('stockQuantity')}
                     placeholder="Enter Stock No"
                     {...field}
                     size="small"
                     fullWidth
+                    sx={{
+                      input: { color: '#fff' },
+                      backgroundColor: '#333',
+                      borderRadius: '4px',
+                    }}
+                    helperText={errors.stockQuantity?.message}
+                    error={!!errors.stockQuantity}
                   />
                 )}
               />
             </Grid2>
+
+            <Grid2 xs={6}>
+              <Typography variant="body1" sx={{ color: '#ccc' }}>Status</Typography>
+              <Controller
+                name="status"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    type="text"
+                    {...register('status')}
+                    placeholder="Enter Status"
+                    {...field}
+                    size="small"
+                    fullWidth
+                    sx={{
+                      input: { color: '#fff' },
+                      backgroundColor: '#333',
+                      borderRadius: '4px',
+                    }}
+                    helperText={errors.status?.message}
+                    error={!!errors.status}
+                  />
+                )}
+              />
+            </Grid2>
+
+            <Grid2 xs={12}>
+              <Typography variant="body1" sx={{ color: '#ccc' }}>Category</Typography>
+              <FormControl 
+                fullWidth 
+                size="small"
+                error={!!errors.categoryId}
+                sx={{ marginBottom: 2 }}
+              >
+                <Controller
+                  name="categoryId"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <>
+                      <Select
+                        {...field}
+                        label="Select Category"
+                        displayEmpty
+                        sx={{
+                          input: { color: '#fff' },
+                          backgroundColor: '#333',
+                          borderRadius: '4px',
+                        }}
+                      >
+                        <MenuItem value="" disabled>
+                          Select category
+                        </MenuItem>
+                        {categories && categories.length > 0 ? (
+                          categories.map(category => (
+                            <MenuItem key={category.id} value={category.id}>
+                              {category.name}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem disabled>No Categories Available</MenuItem>
+                        )}
+                      </Select>
+                      {errors.categoryId && (
+                        <FormHelperText error sx={{ color: '#f44336' }}>
+                          {errors.categoryId?.message}
+                        </FormHelperText>
+                      )}
+                    </>
+                  )}
+                />
+              </FormControl>
+            </Grid2>
           </Grid2>
 
-          <Grid2 container spacing={2} sx={{ marginTop: "20px", width: "92%" }}>
-  <Grid2 xs={6}>
-    <Typography>Status</Typography>
-    <Controller
-      name="status"
-      control={control}
-      defaultValue=""
-      render={({ field }) => (
-        <TextField
-          type="text"
-          {...register("status")}
-          placeholder="Enter status"
-          {...field}
-          size="small"
-          fullWidth
-        />
-      )}
-    />
-  </Grid2>
-
-  <Grid2 xs={6}>
-    <Typography>Category</Typography>
-    <Controller
-      name="categoryId"
-      control={control}
-      defaultValue=""
-      render={({ field }) => (
-        <FormControl fullWidth size='small' sx={{ minWidth: 224 }}>
-          <Select
-            {...field}
-            label="Select category"
-            fullWidth
-            displayEmpty
-          >
-            <MenuItem value="" disabled>
-              Select category
-            </MenuItem>
-            {categories && categories.length > 0 ? (
-              categories.map((category) => (
-                <MenuItem key={category.id} value={category.id}>
-                  {category.name}
-                </MenuItem>
-              ))
-            ) : (
-              <MenuItem disabled>No Categories Available</MenuItem>
-            )}
-          </Select>
-        </FormControl>
-      )}
-    />
-  </Grid2>
-</Grid2>
-
-
-          <DialogActions>
+          <Box display="flex" justifyContent="flex-end" mt={3}>
             <Button
-              variant="outlined"
               onClick={handleClose}
-              sx={{ marginRight: "10px" }}>
-              Close
+              variant="outlined"
+              sx={{
+                marginRight: 2,
+                color: '#ccc',
+                borderColor: '#666',
+                "&:hover": {
+                  borderColor: '#999',
+                }
+              }}
+            >
+              Cancel
             </Button>
             <Button
               type="submit"
               variant="contained"
               sx={{
-                bgcolor: "green",
+                bgcolor: "#198c39",
                 "&:hover": {
-                  bgcolor: "#198c39",
+                  bgcolor: "#145d2a",
                 },
-                marginRight: "65px",
               }}
             >
               Save
             </Button>
-          </DialogActions>
+          </Box>
         </form>
-      </DialogContent>
-    </Dialog>
+        <CustomSnackbar ref={snackbarRef}/>
+      </Drawer>
   );
 }
 
-export default ItemDialogBox;
+export default ItemDrawer;

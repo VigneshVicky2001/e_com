@@ -30,7 +30,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '98vh' }}>
         <Header toggleSidebar={toggleSidebar} showLogout={!isLoginPage} />
         <div style={{ flex: 1, display: 'flex' }}>
           {!isLoginPage && <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} isMinimized={sidebarOpen} />}

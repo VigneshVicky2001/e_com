@@ -1,11 +1,21 @@
-import React, { useEffect } from 'react';
-import { Dialog, DialogActions, DialogTitle, Button, DialogContent, Grid2, Typography, TextField } from '@mui/material';
+import React, { useEffect, useRef } from 'react';
+import { Box, Dialog, DialogActions, DialogTitle, Button, DialogContent, Grid2, Typography, TextField, Drawer } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { addDistributor, updateDistributor, getDistributorById } from '../../Service/DistributorApi';
+import { DistributorValidation } from '../../Common/Validation';
+import { yupResolver } from '@hookform/resolvers/yup';
+import CustomSnackbar, {successSnackbar, errorSnackbar} from '../../Common/Snackbar';
 
 function DistributorDialogBox({ open, handleClose, distributorId, onRefresh }) {
-
-    const { control, handleSubmit, register, setValue, reset } = useForm();
+    const snackbarRef = useRef();
+    const { 
+      control,
+      handleSubmit, 
+      register, 
+      setValue, 
+      reset,
+      formState: { errors },
+    } = useForm({ resolver: yupResolver(DistributorValidation)});
     useEffect(() => {
       if (open) {
         if (distributorId) {
@@ -46,44 +56,63 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh }) {
             updateDistributor(updatePayload)
             .then((response) => {
               if (response?.error?.data?.message) {
-                alert("error");
+                errorSnackbar("error");
               } else {
-                alert("success");
+                successSnackbar("success");
                 onRefresh();
                 reset();
                 handleClose();
               }
             })
             .catch((error) => {
-              alert("ERROR LOL: ", error);
+              errorSnackbar("ERROR LOL: ", error);
             });
         } else {
             addDistributor(createPayload)
             .then((response) => {
               if (response?.error?.data?.message) {
-                alert("error", `${response.error.data.message}`, "");
+                errorSnackbar("error", `${response.error.data.message}`, "");
               } else {
-                alert("Success!");
+                successSnackbar("Success!");
                 onRefresh();
                 reset();
                 handleClose();
               }
             })
             .catch((error) => {
-              alert("ERROR bro");
+              errorSnackbar("ERROR");
             });
         }
       };
 
 
   return (
-    <Dialog fullWidth maxWidth="sm" open={open} onClose={handleClose} sx={{ borderRadius: "10px" }}>
+    <Drawer
+        anchor="right"
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          sx: {
+            width: 400,
+            padding: 3,
+            boxShadow: 3,
+            backgroundColor: '#1f1f1f',
+            color: '#fff',
+            borderRadius: "8px"
+          },
+        }}
+        BackdropProps={{
+          sx: {
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(5px)',
+          },
+        }}
+      >
         {distributorId ? <DialogTitle>Add Distributor</DialogTitle> : <DialogTitle>Edit Distributor</DialogTitle>}
-        <DialogContent sx={{ paddingRight: 0, paddingLeft: 8 }} className='custom-scrollbar'>
             <form onSubmit={handleSubmit(handleFormSubmit)}>
                 <Grid2 container spacing={2} sx={{ width: "92%" }}>
                     <Grid2 xs={6}>
-                      <Typography>
+                      <Typography variant="body1" sx={{ color: '#ccc' }}>
                         Name
                       </Typography>
                       <Controller
@@ -98,13 +127,20 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh }) {
                             {...field}
                             size="small"
                             fullWidth
+                            sx={{
+                              input: { color: '#fff' },
+                              backgroundColor: '#333',
+                              borderRadius: '4px',
+                            }}
+                            helperText={errors.name?.message}
+                            error={!!errors.name}
                           />
                         )}
                       />
                     </Grid2>
 
                     <Grid2 xs={6}>
-                        <Typography>
+                        <Typography variant="body1" sx={{ color: '#ccc' }}>
                             Contact info
                         </Typography>
                         <Controller
@@ -119,6 +155,13 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh }) {
                             {...field}
                             size="small"
                             fullWidth
+                            sx={{
+                              input: { color: '#fff' },
+                              backgroundColor: '#333',
+                              borderRadius: '4px',
+                            }}
+                            helperText={errors.contactInfo?.message}
+                            error={!!errors.contactInfo}
                           />
                         )}
                       />
@@ -126,7 +169,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh }) {
                 </Grid2>
                 <Grid2 container spacing={2} sx={{ marginTop: "20px", width: "92%" }}>
                     <Grid2 xs={6}>
-                        <Typography>
+                        <Typography variant="body1" sx={{ color: '#ccc' }}>
                           Address
                         </Typography>
                         <Controller
@@ -141,36 +184,49 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh }) {
                             {...field}
                             size="small"
                             fullWidth
+                            sx={{
+                              input: { color: '#fff' },
+                              backgroundColor: '#333',
+                              borderRadius: '4px',
+                            }}
+                            helperText={errors.address?.message}
+                            error={!!errors.address}
                           />
                         )}
                       />
                     </Grid2>
                 </Grid2>
-                <DialogActions>
-            <Button variant="outlined"
-                onClick={() => {
-                  handleClose();
-                }}
-                sx={{ marginRight: "10px" }}>
-                Close
-            </Button>
-            <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                  bgcolor: "green",
-                  "&:hover": {
-                    bgcolor: "#198c39",
-                  },
-                  marginRight: "65px",
-                }}
-              >
-                Save
-              </Button>
-        </DialogActions>
+                <Box display="flex" justifyContent="flex-end" mt={3}>
+          <Button
+            onClick={handleClose}
+            variant="outlined"
+            sx={{
+              marginRight: 2,
+              color: '#ccc',
+              borderColor: '#666',
+              "&:hover": {
+                borderColor: '#999',
+              }
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              bgcolor: "#198c39",
+              "&:hover": {
+                bgcolor: "#145d2a",
+              },
+            }}
+          >
+            Save
+          </Button>
+        </Box>
             </form>
-        </DialogContent>
-    </Dialog>
+            <snackbarRef ref={snackbarRef}/>
+    </Drawer>
   );
 }
 

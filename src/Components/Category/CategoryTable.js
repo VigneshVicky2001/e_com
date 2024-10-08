@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Tooltip, Switch, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
 import useProgressBar from '../../Common/ProgressBar';
 import { getCategoryById, updateCategory } from '../../Service/CategoryApi';
+import CustomSnackbar, {successSnackbar, errorSnackbar} from '../../Common/Snackbar';
 
 const CategoryTable = ({ categories, onEdit, onRefresh }) => {
+  const snackbarRef = useRef();
   const { startProgress, stopProgress } = useProgressBar();
   const [DialogOpen, setDialogOpen] = useState(false);
   const [categoryId, setCategoryId] = useState(null);
@@ -41,15 +43,15 @@ const CategoryTable = ({ categories, onEdit, onRefresh }) => {
       })
         .then((response) => {
           if(response?.error?.data?.message) {
-            alert("error");
+            errorSnackbar("error");
           } else {
-            // alert("successsful");
+            successSnackbar("successsful");
             onRefresh();
             handleCloseDialog();
           }
         })
     } catch (error) {
-      alert(error.message);
+      errorSnackbar(error.message);
     } finally {
       stopProgress();
     }
@@ -180,7 +182,7 @@ const CategoryTable = ({ categories, onEdit, onRefresh }) => {
           </Button>
         </DialogActions>
       </Dialog>
-
+      <snackbarRef ref={snackbarRef}/>
     </TableContainer>
   );
 };

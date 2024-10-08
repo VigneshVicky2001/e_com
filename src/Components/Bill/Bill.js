@@ -107,7 +107,7 @@ export default function Bill() {
         </Button>
       </Box>
 
-      <Paper elevation={3} sx={{ padding: 2, borderRadius: '8px', mb: 2 }}>
+      <Paper elevation={3} sx={{ padding: 2, borderRadius: '8px' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
             <TextField

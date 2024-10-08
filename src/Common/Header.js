@@ -11,7 +11,7 @@ const GlassAppBar = styled(AppBar)(({ theme }) => ({
   // backdropFilter: 'blur(10px)',
   // boxShadow: '0 4px 20px rgba(0, 0, 0, 0)',
   height: '70px',
-  zIndex: 1300,
+
 }));
 
 const Header = ({ toggleSidebar, showLogout }) => {

@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Divider, Autocomplete, TextField, Table, TableBody, TableCell, TableHead, TableRow, Box, Typography, Paper, IconButton, TableContainer, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { Delete, AddCircleOutline, RemoveCircleOutline } from '@mui/icons-material';
 import { getAllItems } from '../../Service/ItemApi';
 import { addBill } from '../../Service/BillApi';
 import { useNavigate } from 'react-router-dom';
+import CustomSnackbar, { successSnackbar, errorSnackbar } from '../../Common/Snackbar';
 
 const AddBill = () => {
   const navigate = useNavigate();
+  const snackbarRef = useRef();
   const [cart, setCart] = useState([{ item: null, quantity: 1, stockQuantity: 0, rate: 0, tax: 0, total: 0 }]);
   const [items, setItems] = useState([]);
   const [customerName, setCustomerName] = useState('');
   const [customerPhoneNumber, setCustomerPhoneNumber] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [customerEmail, setCustomerEmail] = useState('');
+  const [customerAddress, setCustomerAddress] = useState(''); 
 
   useEffect(() => {
     fetchItems();
@@ -88,8 +92,14 @@ const AddBill = () => {
   const finalAmount = totalAmount - discountInAmount;
 
   const handleProceedToPayment = async () => {
+    const hasItemsInCart = cart.some((cartItem) => cartItem.item !== null);
     if (!customerName || !paymentMethod) {
-      alert('Customer name and payment method are required');
+      errorSnackbar('Customer name and payment method are required');
+      return;
+    }
+
+    if (!hasItemsInCart) {
+      errorSnackbar('Please add at least one item to the cart before proceeding to payment', snackbarRef);
       return;
     }
 
@@ -306,6 +316,34 @@ const AddBill = () => {
         }}
       />
 
+      <TextField
+        label="Customer Email"
+        value={customerEmail}
+        fullWidth
+        required
+        sx={{
+          marginBottom: 2,
+          '& .MuiInputBase-root': {
+            backgroundColor: '#fff', 
+            borderRadius: 2,
+          },
+        }}
+      />
+
+      <TextField
+        label="Customer Address"
+        value={customerAddress}
+        fullWidth
+        required
+        sx={{
+          marginBottom: 2,
+          '& .MuiInputBase-root': {
+            backgroundColor: '#fff', 
+            borderRadius: 2,
+          },
+        }}
+      />
+
       <FormControl fullWidth required sx={{ marginBottom: 2 }}>
         <InputLabel>Payment Method</InputLabel>
         <Select
@@ -343,7 +381,7 @@ const AddBill = () => {
         Proceed to Payment
       </Button>
     </Paper>
-
+        <CustomSnackbar ref={snackbarRef}/>
     </Box>
   );
 };

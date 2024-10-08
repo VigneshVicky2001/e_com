@@ -25,8 +25,9 @@ const AvatarWrapper = styled('label')({
 const AvatarStyled = styled(Avatar)({
   width: 100,
   height: 100,
-  // border: '2px solid #3f51b5',
-  // boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.5)',
+  borderRadius: 0,
+  border: '2px solid',
+  boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.2)',
 });
 
 const Overlay = styled(Box)({
@@ -40,7 +41,7 @@ const Overlay = styled(Box)({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  borderRadius: '50%',
+  borderRadius: 0,
   opacity: 0,
   transition: 'opacity 0.3s ease',
 });
@@ -65,12 +66,13 @@ const Settings = () => {
   const [orgNo, setOrgNo] = useState('');
   const [orgAddress, setOrgAddress] = useState('');
   const [logo, setLogo] = useState(null);
+  const [logoPreview, setLogoPreview] = useState(null);
 
-  
   const handleLogoChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setLogo(file);
+      setLogoPreview(URL.createObjectURL(file));
     }
   };
 
@@ -100,7 +102,7 @@ const Settings = () => {
       <CardContent>
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
           <AvatarWrapper>
-            <AvatarStyled src={logo} alt="Organization Logo" />
+            <AvatarStyled src={logoPreview} alt="Organization Logo" />
             <Overlay className="overlay">
               <PhotoCamera fontSize="medium" />
             </Overlay>

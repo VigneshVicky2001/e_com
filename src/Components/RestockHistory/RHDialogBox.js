@@ -1,15 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { Dialog, DialogActions, DialogTitle, Button, DialogContent, Grid2, Typography, TextField, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
+import React, { useEffect, useState, useRef } from 'react';
+import { FormHelperText, Box, Drawer, Dialog, DialogActions, DialogTitle, Button, DialogContent, Grid2, Typography, TextField, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { addRestockHistory, updateRestockHistory, getRestockHistoryById } from '../../Service/RestockApi';
 import { getAllItemAndName } from '../../Service/ItemApi';
 import { getDistributorNameAndId } from '../../Service/DistributorApi';
+import { StockHistoryValidation } from '../../Common/Validation';
+import { yupResolver } from '@hookform/resolvers/yup';
+import CustomSnackbar, {successSnackbar, errorSnackbar} from '../../Common/Snackbar';
 
 function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
-
+    const snackbarRef = useRef();
     const [distributors, setDistributors] = useState([]);
     const [items, setItems] = useState([]);
-    const { control, handleSubmit, register, setValue, reset } = useForm();
+    const { 
+      control, 
+      handleSubmit, 
+      register, 
+      setValue, 
+      reset,
+      formState: { errors },
+    } = useForm({ resolver: yupResolver(StockHistoryValidation)});
     useEffect(() => {
       if (open) {
         fetchDistributors();
@@ -82,44 +92,65 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
           updateRestockHistory(updatePayload)
             .then((response) => {
               if (response?.error?.data?.message) {
-                alert("error");
+                errorSnackbar("error");
               } else {
-                alert("success");
+                successSnackbar("History updated successfully!");
                 onRefresh();
                 reset();
                 handleClose();
               }
             })
             .catch((error) => {
-              alert("ERROR LOL: ", error);
+              errorSnackbar("ERROR : ", error);
             });
         } else {
           addRestockHistory(createPayload)
             .then((response) => {
               if (response?.error?.data?.message) {
-                alert("error", `${response.error.data.message}`, "");
+                errorSnackbar("error", `${response.error.data.message}`, "");
               } else {
-                alert("Success!");
+                successSnackbar("History added successfully!");
                 onRefresh();
                 reset();
                 handleClose();
               }
             })
             .catch((error) => {
-              alert("ERROR bro");
+              errorSnackbar("ERROR");
             });
         }
       };
 
 
   return (
-    <Dialog fullWidth maxWidth="sm" open={open} onClose={handleClose} sx={{ borderRadius: "10px" }}>
-        {RHId ? <DialogTitle>Add Restock History</DialogTitle> : <DialogTitle>Edit Restock History</DialogTitle>}
-        <DialogContent sx={{ paddingRight: 0, paddingLeft: 8 }} className='custom-scrollbar'>
+    <Drawer
+      anchor="right"
+      open={open}
+      onClose={handleClose}
+      PaperProps={{
+        sx: {
+          width: 400,
+          padding: 3,
+          boxShadow: 3,
+          backgroundColor: '#1f1f1f',
+          color: '#fff',
+          borderRadius: "8px"
+        },
+      }}
+      BackdropProps={{
+        sx: {
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backdropFilter: 'blur(5px)',
+        },
+      }}
+    >
+    <Typography variant="h5" sx={{ marginBottom: 2, color: "#fff" }}>        
+      {RHId ? <DialogTitle>Edit Restock History</DialogTitle> : <DialogTitle>Add Restock History</DialogTitle>}
+    </Typography>
             <form onSubmit={handleSubmit(handleFormSubmit)}>
                 <Grid2 container spacing={2} sx={{ width: "92%" }}>
                     <Grid2 xs={6}>
-                      <Typography>
+                      <Typography variant="body1" sx={{ color: '#ccc' }}>
                         Adjustment Qty
                       </Typography>
                       <Controller
@@ -134,43 +165,42 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
                             {...field}
                             size="small"
                             fullWidth
+                            sx={{
+                              input: { color: '#fff' },
+                              backgroundColor: '#333',
+                              borderRadius: '4px',
+                            }}
+                            helperText={errors.adjustment_quantity?.message}
+                            error={!!errors.adjustment_quantity}
                           />
                         )}
                       />
                     </Grid2>
-
                     <Grid2 xs={6}>
-                        <Typography>
+                        <Typography variant="body1" sx={{ color: '#ccc' }}>
                             Adjustment Type
                         </Typography>
-                        {/* <Controller
-                        name="adjustment_type"
-                        control={control}
-                        defaultValue=""
-                        render={({ field }) => (
-                          <TextField
-                            type="text"
-                            {...register("adjustment_type")}
-                            placeholder="Enter Type"
-                            {...field}
-                            size="small"
-                            fullWidth
-                          />
-                        )}
-                      /> */}
-
                         <Controller
                           name="adjustment_type"
                           control={control}
                           defaultValue=""
                           render={({ field }) => (
-                            <FormControl fullWidth size='small' sx={{ minWidth: 224 }}>
-                              {/* <InputLabel>Select category</InputLabel> */}
+                            <FormControl 
+                              fullWidth 
+                              size='small' 
+                              sx={{ minWidth: 224 }}
+                              error={!!errors.adjustment_type}
+                            >
                               <Select
                                 {...field}
                                 label="Select type"
                                 fullWidth
                                 displayEmpty
+                                sx={{
+                                  input: { color: '#fff' },
+                                  backgroundColor: '#333',
+                                  borderRadius: '4px',
+                                }}
                               >
                                 <MenuItem value="" disabled>
                                   Select type
@@ -178,6 +208,11 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
                                 <MenuItem value="restock">restock</MenuItem>
                                 <MenuItem value="return to supplier">return to supplier</MenuItem>
                               </Select>
+                              {errors.adjustment_type && (
+                                <FormHelperText error sx={{ color: '#f44336' }}>
+                                  {errors.adjustment_type?.message}
+                                </FormHelperText>
+                              )}
                             </FormControl>
                           )}
                         />
@@ -185,7 +220,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
                 </Grid2>
                 <Grid2 container spacing={2} sx={{ marginTop: "20px", width: "92%" }}>
                     <Grid2 xs={6}>
-                        <Typography>
+                        <Typography variant="body1" sx={{ color: '#ccc' }}>
                           Distributor
                         </Typography>
                         <Controller
@@ -193,13 +228,23 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
                           control={control}
                           defaultValue=""
                           render={({ field }) => (
-                            <FormControl fullWidth size='small' sx={{ minWidth: 224 }}>
+                            <FormControl 
+                              fullWidth 
+                              size='small' 
+                              sx={{ minWidth: 224 }}
+                              error={!!errors.distibutorId}
+                            >
                               {/* <InputLabel>Select category</InputLabel> */}
                               <Select
                                 {...field}
                                 label="Select distributor"
                                 fullWidth
                                 displayEmpty
+                                sx={{
+                                  input: { color: '#fff' },
+                                  backgroundColor: '#333',
+                                  borderRadius: '4px',
+                                }}
                               >
                                 <MenuItem value="" disabled>
                                   Select distributor
@@ -214,6 +259,11 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
                                   <MenuItem disabled>No Distributors Available</MenuItem>
                                 )}
                               </Select>
+                              {errors.distibutorId && (
+                                <FormHelperText error sx={{ color: '#f44336' }}>
+                                  {errors.distibutorId?.message}
+                                </FormHelperText>
+                              )}
                             </FormControl>
                           )}
                         />
@@ -221,7 +271,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
                 </Grid2>
                 <Grid2 container spacing={2} sx={{ marginTop: "20px", width: "92%" }}>
                     <Grid2 xs={6}>
-                        <Typography>
+                        <Typography variant="body1" sx={{ color: '#ccc' }}>
                             Buying Price
                         </Typography>
                             <Controller
@@ -236,6 +286,13 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
                                 {...field}
                                 size="small"
                                 fullWidth
+                                sx={{
+                                  input: { color: '#fff' },
+                                  backgroundColor: '#333',
+                                  borderRadius: '4px',
+                                }}
+                                helperText={errors.buyingPrice?.message}
+                                error={!!errors.buyingPrice}
                             />
                             )}
                         />
@@ -247,12 +304,22 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
                           control={control}
                           defaultValue=""
                           render={({ field }) => (
-                            <FormControl fullWidth size='small' sx={{ minWidth: 224 }}>
+                            <FormControl 
+                              fullWidth 
+                              size='small' 
+                              sx={{ minWidth: 224 }}
+                              error={!!errors.itemId}
+                            >
                               <Select
                                 {...field}
                                 label="Select Items"
                                 fullWidth
                                 displayEmpty
+                                sx={{
+                                  input: { color: '#fff' },
+                                  backgroundColor: '#333',
+                                  borderRadius: '4px',
+                                }}
                               >
                                 <MenuItem value="" disabled>
                                   Select Items
@@ -267,36 +334,47 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
                                   <MenuItem disabled>No Items Available</MenuItem>
                                 )}
                               </Select>
+                              {errors.itemId && (
+                                <FormHelperText error sx={{ color: '#f44336' }}>
+                                  {errors.itemId?.message}
+                                </FormHelperText>
+                              )}
                             </FormControl>
                           )}
                         />
                     </Grid2>
                 </Grid2>
-                <DialogActions>
-            <Button variant="outlined"
-                onClick={() => {
-                  handleClose();
-                }}
-                sx={{ marginRight: "10px" }}>
-                Close
-            </Button>
-            <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                  bgcolor: "green",
-                  "&:hover": {
-                    bgcolor: "#198c39",
-                  },
-                  marginRight: "65px",
-                }}
-              >
-                Save
-              </Button>
-        </DialogActions>
+                <Box display="flex" justifyContent="flex-end" mt={3}>
+          <Button
+            onClick={handleClose}
+            variant="outlined"
+            sx={{
+              marginRight: 2,
+              color: '#ccc',
+              borderColor: '#666',
+              "&:hover": {
+                borderColor: '#999',
+              }
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              bgcolor: "#198c39",
+              "&:hover": {
+                bgcolor: "#145d2a",
+              },
+            }}
+          >
+            Save
+          </Button>
+        </Box>
             </form>
-        </DialogContent>
-    </Dialog>
+            <snackbarRef ref={snackbarRef}/>
+        </Drawer>
   );
 }
 
