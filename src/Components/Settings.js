@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, Card, CardContent, TextField, Typography, Avatar } from '@mui/material';
 import { styled } from '@mui/system';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import { saveStoreDetails } from '../Service/StoreDetails';
+import { saveStoreDetails } from '../Service/StoreDetails.api';
 
 const StyledCard = styled(Card)({
   maxWidth: 500,

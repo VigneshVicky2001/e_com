@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Drawer, Button, Typography, TextField, Select, MenuItem, FormControl, Grid2, Box, FormHelperText } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { addItem, updateItem, getItemById } from '../../Service/ItemApi';
-import { getCategoriesDropdown } from '../../Service/CategoryApi';
+import { addItem, updateItem, getItemById } from '../../Service/Item.api';
+import { getCategoriesDropdown } from '../../Service/Category.api';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ItemValidation } from '../../Common/Validation';
 import CustomSnackbar, {successSnackbar, errorSnackbar} from '../../Common/Snackbar';

@@ -4,7 +4,7 @@ import Header from './Common/Header';
 import Footer from './Common/Footer';
 import Sidebar from './Components/Sidebar';
 import Login from './Components/Login';
-import Dashboard from './Components/Dashboard';
+import Dashboard from './Components/Dashboard/Dashboard';
 import Category from './Components/Category/Category';
 import Item from './Components/Item/Item';
 import Bill from './Components/Bill/Bill';

@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { FormHelperText, Box, Drawer, Dialog, DialogActions, DialogTitle, Button, DialogContent, Grid2, Typography, TextField, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { addRestockHistory, updateRestockHistory, getRestockHistoryById } from '../../Service/RestockApi';
-import { getAllItemAndName } from '../../Service/ItemApi';
-import { getDistributorNameAndId } from '../../Service/DistributorApi';
+import { addRestockHistory, updateRestockHistory, getRestockHistoryById } from '../../Service/Restock.api';
+import { getAllItemAndName } from '../../Service/Item.api';
+import { getDistributorNameAndId } from '../../Service/Distributor.api';
 import { StockHistoryValidation } from '../../Common/Validation';
 import { yupResolver } from '@hookform/resolvers/yup';
 import CustomSnackbar, {successSnackbar, errorSnackbar} from '../../Common/Snackbar';

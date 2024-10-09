@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Typography, Button, TablePagination } from '@mui/material';
-import { getAllCategories, updateCategory, getCategoriesDropdown } from '../../Service/CategoryApi';
+import { getAllCategories, updateCategory, getCategoriesDropdown } from '../../Service/Category.api';
 import CategoryDialogBox from './CategoryDialogBox';
 import CategoryTable from './CategoryTable';
 import useProgressBar from '../../Common/ProgressBar';

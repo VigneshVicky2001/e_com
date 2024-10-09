@@ -4,7 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
 import useProgressBar from '../../Common/ProgressBar';
-import { getCategoryById, updateCategory } from '../../Service/CategoryApi';
+import { getCategoryById, updateCategory } from '../../Service/Category.api';
 import CustomSnackbar, {successSnackbar, errorSnackbar} from '../../Common/Snackbar';
 
 const CategoryTable = ({ categories, onEdit, onRefresh }) => {

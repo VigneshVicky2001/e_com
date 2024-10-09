@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Divider, Autocomplete, TextField, Table, TableBody, TableCell, TableHead, TableRow, Box, Typography, Paper, IconButton, TableContainer, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { Delete, AddCircleOutline, RemoveCircleOutline } from '@mui/icons-material';
-import { getAllItems } from '../../Service/ItemApi';
-import { addBill } from '../../Service/BillApi';
+import { getAllItems } from '../../Service/Item.api';
+import { addBill } from '../../Service/Bill.api';
 import { useNavigate } from 'react-router-dom';
 import CustomSnackbar, { successSnackbar, errorSnackbar } from '../../Common/Snackbar';
 
@@ -93,8 +93,17 @@ const AddBill = () => {
 
   const handleProceedToPayment = async () => {
     const hasItemsInCart = cart.some((cartItem) => cartItem.item !== null);
-    if (!customerName || !paymentMethod) {
-      errorSnackbar('Customer name and payment method are required');
+    if (!customerName) {
+      errorSnackbar('Customer name is required', snackbarRef);
+      return;
+    } else if (!customerPhoneNumber) {
+      errorSnackbar('Customer number is required', snackbarRef);
+      return;
+    } else if (!customerAddress) {
+      errorSnackbar('Customer address is required', snackbarRef);
+      return;
+    } else if (!paymentMethod) {
+      errorSnackbar('Payment method is required', snackbarRef);
       return;
     }
 
@@ -288,7 +297,7 @@ const AddBill = () => {
       </Typography>
 
       <TextField
-        label="Customer Name"
+        label="Name"
         value={customerName}
         onChange={(e) => setCustomerName(e.target.value)}
         fullWidth
@@ -303,9 +312,10 @@ const AddBill = () => {
       />
 
       <TextField
-        label="Customer Phone Number"
+        label="Phone Number"
         value={customerPhoneNumber}
         onChange={(e) => setCustomerPhoneNumber(e.target.value)}
+        required
         fullWidth
         sx={{
           marginBottom: 2,
@@ -317,10 +327,10 @@ const AddBill = () => {
       />
 
       <TextField
-        label="Customer Email"
+        label="Email"
         value={customerEmail}
+        onChange={(e) => setCustomerEmail(e.target.value)}
         fullWidth
-        required
         sx={{
           marginBottom: 2,
           '& .MuiInputBase-root': {
@@ -331,8 +341,9 @@ const AddBill = () => {
       />
 
       <TextField
-        label="Customer Address"
+        label="Address"
         value={customerAddress}
+        onChange={(e) => setCustomerAddress(e.target.value)}
         fullWidth
         required
         sx={{

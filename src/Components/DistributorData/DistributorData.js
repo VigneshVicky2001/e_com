@@ -4,7 +4,7 @@ import TablePagination from '@mui/material/TablePagination';
 import DistributorDataTable from './DistributorDataTable';
 import useProgressBar from '../../Common/ProgressBar';
 import { start } from 'nprogress';
-import { getAllDistributors } from '../../Service/DistributorApi';
+import { getAllDistributors } from '../../Service/Distributor.api';
 import DistributorDialogBox from './DistributorDialogBox';
 
 export default function DistributorData() {

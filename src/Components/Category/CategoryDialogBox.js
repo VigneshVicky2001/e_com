@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Drawer, Button, Typography, TextField, Box, Grid } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { addCategory, getCategoryById, updateCategory } from '../../Service/CategoryApi';
+import { addCategory, getCategoryById, updateCategory } from '../../Service/Category.api';
 import { CategoryValidation } from '../../Common/Validation';
 import { yupResolver } from "@hookform/resolvers/yup";
 import CustomSnackbar, { successSnackbar, errorSnackbar } from '../../Common/Snackbar';

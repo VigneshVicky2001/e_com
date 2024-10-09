@@ -26,12 +26,11 @@ const CustomSnackbar = forwardRef((props, ref) => {
     if (reason === 'clickaway') return;
     setSnackbarState({ ...snackbarState, open: false });
 
-    // Reset the state after a short delay to allow the snackbar to reappear
     setTimeout(() => {
       setSnackbarState((prevState) => ({
         ...prevState,
         message: '',
-        severity: 'success', // or whatever the default state you want
+        severity: 'success',
       }));
     }, 300);
   };

@@ -4,7 +4,7 @@ import TablePagination from '@mui/material/TablePagination';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import BillTable from './BillTable';
-import { getBills } from '../../Service/BillApi';
+import { getBills } from '../../Service/Bill.api';
 import useProgressBar from '../../Common/ProgressBar';
 import { useNavigate } from 'react-router-dom';
 

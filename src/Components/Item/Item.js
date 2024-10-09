@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Typography, Button, TextField, Select, MenuItem, TablePagination } from '@mui/material';
-import { getItems } from '../../Service/ItemApi';
+import { getItems } from '../../Service/Item.api';
 import ItemDialogBox from './ItemDialogBox';
 import ItemTable from './ItemTable';
 import { FormControl, InputLabel } from '@mui/material';

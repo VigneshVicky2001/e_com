@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Typography, Select, MenuItem, FormControlLabel, Switch, TextField, Button, IconButton, Paper } from '@mui/material';
 import TablePagination from '@mui/material/TablePagination';
-import { getAllRestockHistory } from '../../Service/RestockApi';
+import { getAllRestockHistory } from '../../Service/Restock.api';
 import useProgressBar from '../../Common/ProgressBar';
 import RestockHistoryTable from './RestockHistoryTable';
 import RHDialogBox from './RHDialogBox';

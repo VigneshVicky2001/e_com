@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Box, Dialog, DialogActions, DialogTitle, Button, DialogContent, Grid2, Typography, TextField, Drawer } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { addDistributor, updateDistributor, getDistributorById } from '../../Service/DistributorApi';
+import { addDistributor, updateDistributor, getDistributorById } from '../../Service/Distributor.api';
 import { DistributorValidation } from '../../Common/Validation';
 import { yupResolver } from '@hookform/resolvers/yup';
 import CustomSnackbar, {successSnackbar, errorSnackbar} from '../../Common/Snackbar';
