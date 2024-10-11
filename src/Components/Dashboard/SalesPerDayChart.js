@@ -2,14 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Paper, Box, Typography, Select, MenuItem } from '@mui/material';
 import * as d3 from 'd3';
 
-const SalesPerMonthChart = () => {
-
+const SalesPerDayChart = () => {
   const salesLineChartRef = useRef();
   const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
   const [year, setYear] = useState(currentYear);
+  const [month, setMonth] = useState(currentMonth);
 
-  const SalesPerMonthOfTheYear = async (year) => {
-    const response = await fetch(`http://localhost:8080/dashboard/salesPerMonthOfTheYear?year=${year}`);
+  const SalesPerDayOfTheMonth = async (year, month) => {
+    const response = await fetch(`http://localhost:8080/dashboard/salesPerDayOfTheMonth?/year=${year}&/month=${month}`);
     return response;
   };
 
@@ -17,23 +18,21 @@ const SalesPerMonthChart = () => {
     setYear(event.target.value);
   };
 
+  const handleMonthChange = (event) => {
+    setMonth(event.target.value);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await SalesPerMonthOfTheYear(year);
+        const response = await SalesPerDayOfTheMonth(year, month);
         const result = await response.json();
 
         if (response.ok && result.status === "200") {
-          const salesTrendData = result.list.map((d, index) => {
-            const monthNames = [
-              'January', 'February', 'March', 'April', 'May', 'June', 
-              'July', 'August', 'September', 'October', 'November', 'December'
-            ];
-            return {
-              month: monthNames[index],
-              sales: Object.values(d)[0],
-            };
-          });
+          const salesTrendData = result.list.map((d, index) => ({
+            day: index + 1,
+            sales: Object.values(d)[0],
+          }));
 
           renderChart(salesTrendData);
         }
@@ -58,7 +57,7 @@ const SalesPerMonthChart = () => {
       const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
       const x = d3.scaleBand()
-        .domain(salesTrendData.map(d => d.month))
+        .domain(salesTrendData.map(d => d.day))
         .range([0, width]);
 
       const y = d3.scaleLinear()
@@ -67,7 +66,7 @@ const SalesPerMonthChart = () => {
         .range([height, 0]);
 
       const line = d3.line()
-        .x(d => x(d.month))
+        .x(d => x(d.day))
         .y(d => y(d.sales))
         .curve(d3.curveMonotoneX);
 
@@ -115,7 +114,7 @@ const SalesPerMonthChart = () => {
         .data(salesTrendData)
         .enter().append("circle")
         .attr("class", "dot")
-        .attr("cx", d => x(d.month))
+        .attr("cx", d => x(d.day))
         .attr("cy", d => y(d.sales))
         .attr("r", 0)
         .attr("fill", "#1f77b4")
@@ -128,7 +127,7 @@ const SalesPerMonthChart = () => {
           tooltip.transition()
             .duration(200)
             .style("opacity", .9);
-          tooltip.html(`Month: ${d.month}<br>Sales: ₹${d.sales}`)
+          tooltip.html(`Day: ${d.day}<br>Sales: ₹${d.sales}`)
             .style("left", (event.pageX + 5) + "px")
             .style("top", (event.pageY - 28) + "px");
         })
@@ -139,12 +138,13 @@ const SalesPerMonthChart = () => {
         });
     };
 
-  }, [year]);
+  }, [year, month]);
 
   return (
     <Paper sx={{ padding: 2, backgroundColor: '#ffffff', position: 'relative' }}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h6">Sales Trend Per Month</Typography>
+        <Typography variant="h6">Sales Trend Per Day</Typography>
+        <Box>
           <Select value={year} onChange={handleYearChange}>
             {Array.from({ length: currentYear - 2014 }, (_, i) => (
               <MenuItem key={2015 + i} value={2015 + i}>
@@ -152,10 +152,18 @@ const SalesPerMonthChart = () => {
               </MenuItem>
             ))}
           </Select>
+          <Select value={month} onChange={handleMonthChange}>
+            {Array.from({ length: 12 }, (_, i) => (
+              <MenuItem key={i + 1} value={i + 1}>
+                {new Date(0, i).toLocaleString('default', { month: 'long' })}
+              </MenuItem>
+            ))}
+          </Select>
         </Box>
-        <svg ref={salesLineChartRef}></svg>
-      </Paper>
-  )
+      </Box>
+      <svg ref={salesLineChartRef}></svg>
+    </Paper>
+  );
 }
 
-export default SalesPerMonthChart
+export default SalesPerDayChart;
