@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Paper, Box, Typography, Select, MenuItem } from '@mui/material';
 import * as d3 from 'd3';
-import { SalesPerDayOfTheMonth } from '../../Service/Dashboard.api'
+import { SalesPerDayOfTheMonth } from '../../Service/Dashboard.api';
 
 const SalesPerDayChart = () => {
   const salesLineChartRef = useRef();

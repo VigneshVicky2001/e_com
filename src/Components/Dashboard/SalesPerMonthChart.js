@@ -16,7 +16,7 @@ const SalesPerMonthChart = () => {
     const fetchData = async () => {
       try {
         const result = await SalesPerMonthOfTheYear(year);
-
+        
         if (result.status === "200") {
           const salesTrendData = result.list.map((d, index) => {
             const monthNames = [
@@ -28,13 +28,16 @@ const SalesPerMonthChart = () => {
               sales: Object.values(d)[0],
             };
           });
-
+    
           renderChart(salesTrendData);
+        } else {
+          console.error('Error: Unexpected response status', result.status);
         }
       } catch (error) {
         console.error('Error fetching sales data:', error);
       }
     };
+    
 
     fetchData();
 

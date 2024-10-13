@@ -1,25 +1,39 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { AppBar, Toolbar, Typography, IconButton, Box } from '@mui/material';
 import { styled } from '@mui/system';
 import BarcodeIcon from '@mui/icons-material/QrCode';
 import LogoutSharpIcon from '@mui/icons-material/LogoutSharp';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
+import { getLogo } from '../Service/StoreDetails.api'; // Assuming getLogo is from an API
 
 const GlassAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: '#333',
-  // backdropFilter: 'blur(10px)',
-  // boxShadow: '0 4px 20px rgba(0, 0, 0, 0)',
   height: '70px',
-
 }));
 
 const Header = ({ toggleSidebar, showLogout }) => {
   const navigate = useNavigate();
+  const [logoUrl, setLogoUrl] = useState(null);
 
   const handleLogout = () => {
     navigate('/');
-  }
+  };
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await getLogo(1);
+        const logoData = response.logo;
+        const logoSrc = `data:image/png;base64,${logoData}`;
+        setLogoUrl(logoSrc);
+      } catch (error) {
+        console.error('Failed to load logo:', error);
+      }
+    };
+
+    fetchLogo();
+  }, []);
 
   return (
     <GlassAppBar position="fixed" className="header">
@@ -33,6 +47,19 @@ const Header = ({ toggleSidebar, showLogout }) => {
         >
           <MenuIcon sx={{ fontSize: 40, color: '#fff' }} />
         </IconButton>
+
+        {/* {logoUrl && (
+          <Box
+            component="img"
+            src={logoUrl}
+            alt="Organization Logo"
+            sx={{
+              height: '50px',
+              width: 'auto',
+              marginRight: '20px',
+            }}
+          />
+        )} */}
 
         <Typography
           variant="h5"
@@ -48,11 +75,36 @@ const Header = ({ toggleSidebar, showLogout }) => {
           Billing Application
         </Typography>
 
-        {showLogout && (
-          <IconButton onClick={handleLogout} color="inherit" edge="end">
-            <LogoutSharpIcon sx={{ fontSize: 30, color: '#fff' }} />
-          </IconButton>
-        )}
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {logoUrl && (
+            <IconButton
+              sx={{
+                borderRadius: '50%',
+                padding: 0,
+                overflow: 'hidden',
+                height: '50px',
+                width: '50px',
+                marginRight: '16px',
+              }}
+            >
+              <img
+                src={logoUrl}
+                alt="Store Logo"
+                style={{
+                  height: '100%',
+                  width: '100%',
+                }}
+              />
+            </IconButton>
+          )}
+
+          {showLogout && (
+            <IconButton onClick={handleLogout} color="inherit" edge="end">
+              <LogoutSharpIcon sx={{ fontSize: 30, color: '#fff' }} />
+            </IconButton>
+          )}
+        </Box>
+
       </Toolbar>
     </GlassAppBar>
   );

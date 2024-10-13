@@ -122,6 +122,7 @@ const AddBill = () => {
       returned: false,
       parentBillId: null,
       customerName,
+      customerAddress,
       customerPhoneNumber: customerPhoneNumber || "",
       cartBucketDtos: cart
         .filter(item => item.item)
