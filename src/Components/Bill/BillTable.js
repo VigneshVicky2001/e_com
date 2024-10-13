@@ -1,22 +1,48 @@
-import React, { useState } from 'react';
-import { Typography ,Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tooltip, Chip, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Tooltip, Chip, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
 import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import BillDialog from './BillDialog';
 
-const BillTable = ({ bills, sortBy, sortDirection, onSort, loading, error, paymentMethod, paymentStatus, onPayChange, onStatusChange }) => {
-  
+const BillTable = ({ bills, onPayChange, onStatusChange, loading, error, paymentMethod, paymentStatus }) => {
+  const [sortBy, setSortBy] = useState('createdDate');
+  const [sortDirection, setSortDirection] = useState('DESC');
+  const [sortedBills, setSortedBills] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedBill, setSelectedBill] = useState(null);
-  
+
   const renderSortIcon = (column) => {
     if (sortBy !== column) return null;
     return sortDirection === 'ASC' ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />;
   };
-  
+
+  const handleSort = (column) => {
+    const isAsc = sortBy === column && sortDirection === 'ASC';
+    setSortBy(column);
+    setSortDirection(isAsc ? 'DESC' : 'ASC');
+  };
+
   const handleRowClick = (bill) => {
     setSelectedBill(bill);
     setOpenDialog(true);
   };
+
+  useEffect(() => {
+    const sorted = [...bills].sort((a, b) => {
+      if (sortBy === 'createdDate') {
+        return sortDirection === 'ASC'
+          ? new Date(a.createdDate) - new Date(b.createdDate)
+          : new Date(b.createdDate) - new Date(a.createdDate);
+      }
+      if (sortBy === 'billingAmount') {
+        return sortDirection === 'ASC' ? a.billingAmount - b.billingAmount : b.billingAmount - a.billingAmount;
+      }
+      if (sortBy === 'discount') {
+        return sortDirection === 'ASC' ? a.discount - b.discount : b.discount - a.discount;
+      }
+      return 0;
+    });
+    setSortedBills(sorted);
+  }, [bills, sortBy, sortDirection]);
 
   return (
     <>
@@ -26,7 +52,7 @@ const BillTable = ({ bills, sortBy, sortDirection, onSort, loading, error, payme
             <TableRow>
               <TableCell sx={{ minWidth: 50 }}>ID</TableCell>
               <TableCell sx={{ minWidth: 150 }}>Customer Name</TableCell>
-              <TableCell sx={{ minWidth: 100 }} onClick={() => onSort('billingAmount')} style={{ cursor: 'pointer' }}>
+              <TableCell sx={{ minWidth: 100 }} onClick={() => handleSort('billingAmount')} style={{ cursor: 'pointer' }}>
                 <Tooltip title="Sort by Amount" placement="top">
                   <span>Amount {renderSortIcon('billingAmount')}</span>
                 </Tooltip>
@@ -46,12 +72,12 @@ const BillTable = ({ bills, sortBy, sortDirection, onSort, loading, error, payme
                   </Select>
                 </FormControl>
               </TableCell>
-              <TableCell sx={{ minWidth: 150 }} onClick={() => onSort('createdDate')} style={{ cursor: 'pointer' }}>
+              <TableCell sx={{ minWidth: 150 }} onClick={() => handleSort('createdDate')} style={{ cursor: 'pointer' }}>
                 <Tooltip title="Sort by Date" placement="top">
                   <span>Date {renderSortIcon('createdDate')}</span>
                 </Tooltip>
               </TableCell>
-              <TableCell sx={{ minWidth: 100 }} onClick={() => onSort('discount')} style={{ cursor: 'pointer' }}>
+              <TableCell sx={{ minWidth: 100 }} onClick={() => handleSort('discount')} style={{ cursor: 'pointer' }}>
                 <Tooltip title="Sort by Discount" placement="top">
                   <span>Discount {renderSortIcon('discount')}</span>
                 </Tooltip>
@@ -87,7 +113,7 @@ const BillTable = ({ bills, sortBy, sortDirection, onSort, loading, error, payme
                   {error}
                 </TableCell>
               </TableRow>
-            ) : bills.length === 0 ? (
+            ) : sortedBills.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={8} align="center">
                   <Typography variant="h6" color="textSecondary">
@@ -96,7 +122,7 @@ const BillTable = ({ bills, sortBy, sortDirection, onSort, loading, error, payme
                 </TableCell>
               </TableRow>
             ) : (
-              bills.map((bill) => (
+              sortedBills.map((bill) => (
                 <TableRow
                   key={bill.Id}
                   hover

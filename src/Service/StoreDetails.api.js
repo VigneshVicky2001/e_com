@@ -13,4 +13,12 @@ export const saveStoreDetails = (payload) => {
     });
 };
 
+export const getLogo = (id) => {
+    return baseApi.get(`storeDetails/getLogo/${id}`)
+        .then(response => response.data)
+        .catch(error => {
+            console.error(error);
+            throw error;
+        });
+};
 

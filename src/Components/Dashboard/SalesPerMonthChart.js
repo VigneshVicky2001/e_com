@@ -1,17 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Paper, Box, Typography, Select, MenuItem } from '@mui/material';
 import * as d3 from 'd3';
+import { SalesPerMonthOfTheYear } from '../../Service/Dashboard.api';
 
 const SalesPerMonthChart = () => {
 
   const salesLineChartRef = useRef();
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState(currentYear);
-
-  const SalesPerMonthOfTheYear = async (year) => {
-    const response = await fetch(`http://localhost:8080/dashboard/salesPerMonthOfTheYear?year=${year}`);
-    return response;
-  };
 
   const handleYearChange = (event) => {
     setYear(event.target.value);
@@ -20,10 +16,9 @@ const SalesPerMonthChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await SalesPerMonthOfTheYear(year);
-        const result = await response.json();
-
-        if (response.ok && result.status === "200") {
+        const result = await SalesPerMonthOfTheYear(year);
+        
+        if (result.status === "200") {
           const salesTrendData = result.list.map((d, index) => {
             const monthNames = [
               'January', 'February', 'March', 'April', 'May', 'June', 
@@ -34,13 +29,16 @@ const SalesPerMonthChart = () => {
               sales: Object.values(d)[0],
             };
           });
-
+    
           renderChart(salesTrendData);
+        } else {
+          console.error('Error: Unexpected response status', result.status);
         }
       } catch (error) {
         console.error('Error fetching sales data:', error);
       }
     };
+    
 
     fetchData();
 
