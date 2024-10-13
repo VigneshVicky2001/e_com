@@ -73,7 +73,6 @@ const BarChart = ({ stockLevelsData }) => {
       .attr('y', d => y(d.quantity))
       .attr('height', d => height - y(d.quantity));
 
-    // Add labels to the bars
     g.selectAll('.bar-label')
       .data(stockLevelsData)
       .enter().append('text')
