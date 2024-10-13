@@ -10,7 +10,7 @@ export const SalesPerMonthOfTheYear = (year) => {
 }
 
 export const SalesPerDayOfTheMonth = (year, month) => {
-    return baseApi.get(`/dashboard/salesPerDayOfTheMonth/${year}/${month}`)
+    return baseApi.get(`/dashboard/salesPerDayOfTheMonth?/year=${year}&/month=${month}`)
         .then(response => response.data)
         .catch(error => {
             console.error(error);

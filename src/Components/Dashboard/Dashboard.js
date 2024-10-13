@@ -4,6 +4,7 @@ import { Box, Grid, Paper, Select, Typography, MenuItem } from '@mui/material';
 import { SalesPerMonthOfTheYear, SalesPerDayOfTheMonth, GetStockQtyForAllItems } from '../../Service/Dashboard.api';
 import SalesPerMonthChart from './SalesPerMonthChart';
 import SalesPerDayChart from './SalesPerDayChart';
+import StockLevelDashboard from './BarChart';
 
 const Dashboard = () => {
   const categoriesPieChartRef = useRef();
@@ -240,13 +241,8 @@ useEffect(() => {
           <SalesPerDayChart />
         </Grid>
         
-
-               {/* Stock Levels Bar Chart */}
         <Grid item xs={12} md={6}>
-          <Paper sx={{ padding: 2, backgroundColor: '#ffffff' }}>
-            <Typography variant="h6">Stock Levels</Typography>
-            <svg ref={stockBarChartRef}></svg>
-          </Paper>
+          <StockLevelDashboard />
         </Grid>
 
         {/* Payment Methods Donut Chart */}

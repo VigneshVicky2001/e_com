@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Paper, Box, Typography, Select, MenuItem } from '@mui/material';
 import * as d3 from 'd3';
+import { SalesPerDayOfTheMonth } from '../../Service/Dashboard.api'
 
 const SalesPerDayChart = () => {
   const salesLineChartRef = useRef();
@@ -8,11 +9,6 @@ const SalesPerDayChart = () => {
   const currentMonth = new Date().getMonth() + 1;
   const [year, setYear] = useState(currentYear);
   const [month, setMonth] = useState(currentMonth);
-
-  const SalesPerDayOfTheMonth = async (year, month) => {
-    const response = await fetch(`http://localhost:8080/dashboard/salesPerDayOfTheMonth?/year=${year}&/month=${month}`);
-    return response;
-  };
 
   const handleYearChange = (event) => {
     setYear(event.target.value);
@@ -25,10 +21,9 @@ const SalesPerDayChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await SalesPerDayOfTheMonth(year, month);
-        const result = await response.json();
+        const result = await SalesPerDayOfTheMonth(year, month);
 
-        if (response.ok && result.status === "200") {
+        if (result.status === "200") {
           const salesTrendData = result.list.map((d, index) => ({
             day: index + 1,
             sales: Object.values(d)[0],
