@@ -94,16 +94,20 @@ const CustomSnackbar = forwardRef((props, ref) => {
 });
 
 export const successSnackbar = (message, ref) => {
-  if (ref.current) {
+  if (ref && ref.current) {
     console.log('Snackbar opened with success:', message); // Debugging log
     ref.current.openSnackbar(message, 'success');
+  } else {
+    console.error("Snackbar ref is undefined or not passed correctly."); // Error handling
   }
 };
 
 export const errorSnackbar = (message, ref) => {
-  if (ref.current) {
+  if (ref && ref.current) {
     console.log('Snackbar opened with error:', message); // Debugging log
     ref.current.openSnackbar(message, 'error');
+  } else {
+    console.error("Snackbar ref is undefined or not passed correctly."); // Error handling
   }
 };
 

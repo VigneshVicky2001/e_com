@@ -6,7 +6,7 @@ import { CategoryValidation } from '../../Common/Validation';
 import { yupResolver } from "@hookform/resolvers/yup";
 import CustomSnackbar, { successSnackbar, errorSnackbar } from '../../Common/Snackbar';
 
-function CategoryDrawer({ open, handleClose, categoryId, onRefresh }) {
+function CategoryDrawer({ open, handleClose, categoryId, onRefresh, showSuccessSnackbar, showErrorSnackbar }) {
   const snackbarRef = useRef();
   const { 
     control, 
@@ -38,8 +38,7 @@ function CategoryDrawer({ open, handleClose, categoryId, onRefresh }) {
     setValue("description", data?.description || "");
   };
 
-
-  const handleFormSubmit = async (data) => {
+  const handleFormSubmit = (data) => {
     const updatePayload = {
       id: categoryId,
       name: data?.name,
@@ -47,52 +46,46 @@ function CategoryDrawer({ open, handleClose, categoryId, onRefresh }) {
       gstPercent: parseFloat(data?.gstPercent),
       status: true,
     };
-  
+
     const createPayload = {
       name: data?.name,
       description: data?.description,
       gstPercent: parseFloat(data?.gstPercent),
       status: true,
     };
-  
+
     if (categoryId) {
       updateCategory(updatePayload)
         .then((response) => {
-          console.log('Update Response:', response);
           if (response?.error?.data?.message) {
-            errorSnackbar("Error", snackbarRef); // Show error snackbar
+            showErrorSnackbar("Error updating category");
           } else {
-            successSnackbar("Category updated successfully", snackbarRef); // Show success snackbar
+            showSuccessSnackbar("Category updated successfully");
             onRefresh();
             reset();
             handleClose();
           }
         })
         .catch((error) => {
-          console.log('Update Error:', error);
-          errorSnackbar("Error while updating", snackbarRef); // Show error snackbar on catch
+          showErrorSnackbar("Error while updating");
         });
     } else {
-      try {
-        const response = await addCategory(createPayload);
-        console.log('Add Response:', response);
-        
-        // Make sure you're comparing the correct status value
-        if (response.status === "200") {
-          onRefresh();
-          reset();
-          successSnackbar('Category added successfully', snackbarRef);
-          handleClose();
-        } else {
-          errorSnackbar("Error while adding category", snackbarRef); // Show error snackbar
-        }
-      } catch (error) {
-        console.log('Add Error:', error);
-        errorSnackbar("Error while adding category", snackbarRef); // Show error snackbar
-      }
+      addCategory(createPayload)
+        .then((response) => {
+          if (response?.error?.data?.message) {
+            showErrorSnackbar("Error adding category");
+          } else {
+            showSuccessSnackbar("Category added successfully");
+            onRefresh();
+            reset();
+            handleClose();
+          }
+        })
+        .catch((error) => {
+          showErrorSnackbar("Error while adding category");
+        });
     }
   };
-    
 
   return (
     <Drawer

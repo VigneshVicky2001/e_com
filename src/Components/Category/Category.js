@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Box, Typography, Button, TablePagination } from '@mui/material';
-import { getAllCategories, updateCategory, getCategoriesDropdown } from '../../Service/Category.api';
+import { getAllCategories } from '../../Service/Category.api';
 import CategoryDialogBox from './CategoryDialogBox';
 import CategoryTable from './CategoryTable';
 import useProgressBar from '../../Common/ProgressBar';
+import CustomSnackbar, { successSnackbar, errorSnackbar } from '../../Common/Snackbar';
 
 export default function Category() {
   const { startProgress, stopProgress } = useProgressBar();
@@ -14,6 +15,8 @@ export default function Category() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [categoryId, setCategoryId] = useState(null);
+
+  const snackbarRef = useRef(null);  // Snackbar ref to trigger messages from the parent
 
   const filters = useMemo(() => ({
     page,
@@ -33,24 +36,6 @@ export default function Category() {
       stopProgress();
     }
   };
-
-  // const updateCategory = async () => {
-  //   try {
-  //     startProgress();
-  //     setLoading(true);
-  //     const response = await updateCategory({
-  //       id: categoryId,
-  //       name: data?.name,
-  //       description: data?.description,
-  //       gstPercent: parseFloat(data?.gstPercent),
-  //       status: true,
-  //     })
-  //   } catch (error) {
-  //     setError(error.message);
-  //   } finally {
-  //     stopProgress();
-  //   }
-  // }
 
   useEffect(() => {
     fetchCategories();
@@ -83,9 +68,14 @@ export default function Category() {
     fetchCategories();
   };
 
-  // const handleStatusSwitch = (categoryId) => {
+// Pass snackbarRef when calling the successSnackbar or errorSnackbar
+const showSuccessSnackbar = (message) => {
+  successSnackbar(message, snackbarRef);  // Pass snackbarRef as a second argument
+};
 
-  // }
+const showErrorSnackbar = (message) => {
+  errorSnackbar(message, snackbarRef);  // Pass snackbarRef as a second argument
+};
 
   return (
     <Box sx={{
@@ -132,8 +122,6 @@ export default function Category() {
           >
             Add Category
           </Button>
-
-
       </Box>
 
       {loading ? (
@@ -146,6 +134,8 @@ export default function Category() {
             categories={categories}
             onEdit={handleEdit}
             onRefresh={handleRefresh}
+            page={page}
+            rowsPerPage={rowsPerPage}
           />
           <TablePagination
             component="div"
@@ -158,7 +148,16 @@ export default function Category() {
         </>
       )}
 
-      <CategoryDialogBox open={DialogOpen} handleClose={handleCloseDialog} categoryId={categoryId} onRefresh={handleRefresh} />
+      <CategoryDialogBox 
+        open={DialogOpen} 
+        handleClose={handleCloseDialog} 
+        categoryId={categoryId} 
+        onRefresh={handleRefresh}
+        showSuccessSnackbar={showSuccessSnackbar}  // Pass success handler
+        showErrorSnackbar={showErrorSnackbar}  // Pass error handler
+      />
+
+      <CustomSnackbar ref={snackbarRef} />
     </Box>
   );
 }

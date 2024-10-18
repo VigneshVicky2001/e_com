@@ -1,14 +1,14 @@
-import React, { useEffect, useRef } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Tooltip, Switch, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material';
+import React, { useEffect, useState, useRef } from 'react';
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Tooltip, Switch,
+  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, TablePagination
+} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { useState } from 'react';
 import useProgressBar from '../../Common/ProgressBar';
 import { getCategoryById, updateCategory } from '../../Service/Category.api';
-import CustomSnackbar, {successSnackbar, errorSnackbar} from '../../Common/Snackbar';
 
-const CategoryTable = ({ categories, onEdit, onRefresh }) => {
-  const snackbarRef = useRef();
+const CategoryTable = ({ categories, onEdit, onRefresh, page, rowsPerPage  }) => {
   const { startProgress, stopProgress } = useProgressBar();
   const [DialogOpen, setDialogOpen] = useState(false);
   const [categoryId, setCategoryId] = useState(null);
@@ -42,16 +42,16 @@ const CategoryTable = ({ categories, onEdit, onRefresh }) => {
         status: status,
       })
         .then((response) => {
-          if(response?.error?.data?.message) {
-            errorSnackbar("error");
+          if (response?.error?.data?.message) {
+            // errorSnackbar("error");
           } else {
-            successSnackbar("successsful");
+            // successSnackbar("successful");
             onRefresh();
             handleCloseDialog();
           }
         })
     } catch (error) {
-      errorSnackbar(error.message);
+      // errorSnackbar(error.message);
     } finally {
       stopProgress();
     }
@@ -60,7 +60,7 @@ const CategoryTable = ({ categories, onEdit, onRefresh }) => {
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
-  
+
   const handleStatusSwitch = (Id) => {
     setCategoryId(Id);
     setDialogOpen(true);
@@ -68,17 +68,25 @@ const CategoryTable = ({ categories, onEdit, onRefresh }) => {
 
   const handleStatusChange = () => {
     update();
-  }
+  };
+
+  const paginatedCategories = categories.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   return (
     <TableContainer
       component={Paper}
       elevation={3}
       sx={{
-        marginTop: 1
+        marginTop: 1,
+        maxHeight: 800,
+        overflowY: 'auto',
       }}
     >
       <Table
+        stickyHeader
         aria-label="custom category table"
         sx={{
           '& thead th': {
@@ -92,6 +100,9 @@ const CategoryTable = ({ categories, onEdit, onRefresh }) => {
           '& tbody td': {
             textShadow: '0px 0px 8px rgba(255,255,255,0.3)',
           },
+          '& .MuiTableCell-root': {
+            padding: '8px 16px',
+          },
         }}
       >
         <TableHead>
@@ -103,11 +114,9 @@ const CategoryTable = ({ categories, onEdit, onRefresh }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {categories.map((category) => (
+          {paginatedCategories.map((category) => (
             <TableRow key={category.id} hover>
-              <TableCell>
-                {category.name}
-              </TableCell>
+              <TableCell>{category.name}</TableCell>
               <TableCell align="right">{category.gstPercent}%</TableCell>
               <TableCell align="center">
                 <Switch
@@ -131,9 +140,6 @@ const CategoryTable = ({ categories, onEdit, onRefresh }) => {
                         color: '#ff4081',
                         transition: '0.3s ease',
                       },
-                      '&:active': {
-                        transition: '0.3s ease',
-                      },
                     }}
                   >
                     <EditIcon />
@@ -147,9 +153,6 @@ const CategoryTable = ({ categories, onEdit, onRefresh }) => {
                         color: '#ff4081',
                         transition: '0.3s ease',
                       },
-                      '&:active': {
-                        transition: '0.3s ease',
-                      },
                     }}
                   >
                     <MoreVertIcon />
@@ -161,15 +164,14 @@ const CategoryTable = ({ categories, onEdit, onRefresh }) => {
         </TableBody>
       </Table>
 
+      {/* Confirmation dialog for status change */}
       <Dialog
         open={DialogOpen}
         onClose={handleCloseDialog}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {"Status"}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"Status"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Are you sure you want to change the status?
@@ -177,13 +179,12 @@ const CategoryTable = ({ categories, onEdit, onRefresh }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleStatusChange} autoFocus>
-            Yes
-          </Button>
+          <Button onClick={handleStatusChange} autoFocus>Yes</Button>
         </DialogActions>
       </Dialog>
-      <snackbarRef ref={snackbarRef}/>
     </TableContainer>
+
+
   );
 };
 
