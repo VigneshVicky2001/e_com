@@ -9,6 +9,7 @@ import BusinessIcon from '@mui/icons-material/Business';
 import ReportIcon from '@mui/icons-material/Assessment';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 
 const Sidebar = ({ open, isMinimized }) => {
   const drawerWidth = isMinimized ? 70 : 240;
@@ -27,6 +28,7 @@ const Sidebar = ({ open, isMinimized }) => {
     { label: 'Restock History', path: '/restock-history', icon: <HistoryIcon /> },
     { label: 'Distributor Data', path: '/distributor-data', icon: <BusinessIcon /> },
     { label: 'Sales Report', path: '/sales-report', icon: <ReportIcon /> },
+    { label: 'Customer', path: '/customer', icon: <PeopleAltIcon /> },
     { label: 'Settings', path: '/settings', icon: <SettingsIcon /> },
   ];
 

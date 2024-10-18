@@ -151,7 +151,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh }) {
                   <TextField
                     type="text"
                     {...register('name')}
-                    placeholder="Enter name"
+                    placeholder="Enter name*"
                     {...field}
                     size="small"
                     fullWidth
@@ -177,7 +177,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh }) {
                   <TextField
                     type="number"
                     {...register('mrpPrice')}
-                    placeholder="Enter MRP"
+                    placeholder="Enter MRP*"
                     {...field}
                     size="small"
                     fullWidth
@@ -203,7 +203,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh }) {
                   <TextField
                     type="number"
                     {...register('sellingPrice')}
-                    placeholder="Enter Selling Price"
+                    placeholder="Enter Selling Price*"
                     {...field}
                     size="small"
                     fullWidth
@@ -229,7 +229,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh }) {
                   <TextField
                     type="number"
                     {...register('stockQuantity')}
-                    placeholder="Enter Stock No"
+                    placeholder="Enter Stock No*"
                     {...field}
                     size="small"
                     fullWidth
@@ -253,9 +253,9 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh }) {
                 defaultValue=""
                 render={({ field }) => (
                   <TextField
-                    type="text"
                     {...register('status')}
-                    placeholder="Enter Status"
+                    select
+                    label="Enter Status*"
                     {...field}
                     size="small"
                     fullWidth
@@ -266,7 +266,10 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh }) {
                     }}
                     helperText={errors.status?.message}
                     error={!!errors.status}
-                  />
+                  >
+                    <MenuItem value="active">Active</MenuItem>
+                    <MenuItem value="out of stock">Out of Stock</MenuItem>
+                  </TextField>
                 )}
               />
             </Grid2>
@@ -296,7 +299,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh }) {
                         }}
                       >
                         <MenuItem value="" disabled>
-                          Select category
+                          Select category*
                         </MenuItem>
                         {categories && categories.length > 0 ? (
                           categories.map(category => (

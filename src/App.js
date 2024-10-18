@@ -11,6 +11,7 @@ import Bill from './Components/Bill/Bill';
 import RestockHistory from './Components/RestockHistory/RestockHistory';
 import DistributorData from './Components/DistributorData/DistributorData';
 import SalesReport from './Components/SalesReport/SalesReport';
+import Customer from './Components/Customer/Customer';
 import AddBill from './Components/Bill/AddBill';
 import Settings from './Components/Settings';
 import './App.css';
@@ -44,6 +45,7 @@ function App() {
               <Route path="/restock-history" element={<RestockHistory />} />
               <Route path="/distributor-data" element={<DistributorData />} />
               <Route path="/sales-report" element={<SalesReport />} />
+              <Route path="/customer" element={<Customer />} />
               <Route path="/bill/add-bill" element={<AddBill />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>

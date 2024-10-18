@@ -161,7 +161,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
                           <TextField
                             type="number"
                             {...register("adjustment_quantity")}
-                            placeholder="Enter Quantity"
+                            placeholder="Enter Quantity*"
                             {...field}
                             size="small"
                             fullWidth
@@ -203,7 +203,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
                                 }}
                               >
                                 <MenuItem value="" disabled>
-                                  Select type
+                                  Select type*
                                 </MenuItem>
                                 <MenuItem value="restock">restock</MenuItem>
                                 <MenuItem value="return to supplier">return to supplier</MenuItem>
@@ -247,7 +247,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
                                 }}
                               >
                                 <MenuItem value="" disabled>
-                                  Select distributor
+                                  Select distributor*
                                 </MenuItem>
                                 {distributors && distributors.length > 0 ? (
                                   distributors.map((distributor) => (
@@ -282,7 +282,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
                             <TextField
                                 type="number"
                                 {...register("buyingPrice")}
-                                placeholder="Enter Price"
+                                placeholder="Enter Price*"
                                 {...field}
                                 size="small"
                                 fullWidth
@@ -322,7 +322,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
                                 }}
                               >
                                 <MenuItem value="" disabled>
-                                  Select Items
+                                  Select Items*
                                 </MenuItem>
                                 {items && items.length > 0 ? (
                                   items.map((item) => (

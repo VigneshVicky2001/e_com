@@ -12,6 +12,7 @@ const CustomSnackbar = forwardRef((props, ref) => {
     severity: 'success',
   });
 
+  // Expose openSnackbar to the parent via ref
   useImperativeHandle(ref, () => ({
     openSnackbar(message, severity) {
       setSnackbarState({
@@ -22,16 +23,18 @@ const CustomSnackbar = forwardRef((props, ref) => {
     },
   }));
 
+  // Close Snackbar on click or after autoHideDuration
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') return;
-    setSnackbarState({ ...snackbarState, open: false });
+    setSnackbarState((prev) => ({ ...prev, open: false }));
 
+    // Reset the snackbar state after a brief delay to avoid flickering
     setTimeout(() => {
-      setSnackbarState((prevState) => ({
-        ...prevState,
+      setSnackbarState({
+        open: false,
         message: '',
         severity: 'success',
-      }));
+      });
     }, 300);
   };
 
@@ -50,9 +53,7 @@ const CustomSnackbar = forwardRef((props, ref) => {
     }
   };
 
-  const slideTransition = (props) => {
-    return <Slide {...props} direction={props.in ? 'down' : 'up'} />;
-  };
+  const slideTransition = (props) => <Slide {...props} direction="down" />;
 
   return (
     <Snackbar
@@ -94,12 +95,14 @@ const CustomSnackbar = forwardRef((props, ref) => {
 
 export const successSnackbar = (message, ref) => {
   if (ref.current) {
+    console.log('Snackbar opened with success:', message); // Debugging log
     ref.current.openSnackbar(message, 'success');
   }
 };
 
 export const errorSnackbar = (message, ref) => {
   if (ref.current) {
+    console.log('Snackbar opened with error:', message); // Debugging log
     ref.current.openSnackbar(message, 'error');
   }
 };

@@ -38,7 +38,8 @@ function CategoryDrawer({ open, handleClose, categoryId, onRefresh }) {
     setValue("description", data?.description || "");
   };
 
-  const handleFormSubmit = (data) => {
+
+  const handleFormSubmit = async (data) => {
     const updatePayload = {
       id: categoryId,
       name: data?.name,
@@ -46,46 +47,52 @@ function CategoryDrawer({ open, handleClose, categoryId, onRefresh }) {
       gstPercent: parseFloat(data?.gstPercent),
       status: true,
     };
-
+  
     const createPayload = {
       name: data?.name,
       description: data?.description,
       gstPercent: parseFloat(data?.gstPercent),
       status: true,
     };
-
+  
     if (categoryId) {
       updateCategory(updatePayload)
         .then((response) => {
+          console.log('Update Response:', response);
           if (response?.error?.data?.message) {
-            errorSnackbar("Error");
+            errorSnackbar("Error", snackbarRef); // Show error snackbar
           } else {
-            successSnackbar("Category updated successfully");
+            successSnackbar("Category updated successfully", snackbarRef); // Show success snackbar
             onRefresh();
             reset();
             handleClose();
           }
         })
         .catch((error) => {
-          alert("Error while updating");
+          console.log('Update Error:', error);
+          errorSnackbar("Error while updating", snackbarRef); // Show error snackbar on catch
         });
     } else {
-      addCategory(createPayload)
-        .then((response) => {
-          if (response?.error?.data?.message) {
-            errorSnackbar("Error");
-          } else {
-            successSnackbar("Category added successfully");
-            onRefresh();
-            reset();
-            handleClose();
-          }
-        })
-        .catch((error) => {
-          alert("Error while adding category");
-        });
+      try {
+        const response = await addCategory(createPayload);
+        console.log('Add Response:', response);
+        
+        // Make sure you're comparing the correct status value
+        if (response.status === "200") {
+          onRefresh();
+          reset();
+          successSnackbar('Category added successfully', snackbarRef);
+          handleClose();
+        } else {
+          errorSnackbar("Error while adding category", snackbarRef); // Show error snackbar
+        }
+      } catch (error) {
+        console.log('Add Error:', error);
+        errorSnackbar("Error while adding category", snackbarRef); // Show error snackbar
+      }
     }
   };
+    
 
   return (
     <Drawer
@@ -125,7 +132,7 @@ function CategoryDrawer({ open, handleClose, categoryId, onRefresh }) {
                 <TextField
                   type="text"
                   {...register("name")}
-                  placeholder="Enter name"
+                  placeholder="Enter name*"
                   {...field}
                   size="small"
                   fullWidth
@@ -151,7 +158,7 @@ function CategoryDrawer({ open, handleClose, categoryId, onRefresh }) {
                 <TextField
                   type="text"
                   {...register("description")}
-                  placeholder="Enter description"
+                  placeholder="Enter description*"
                   {...field}
                   size="small"
                   fullWidth
@@ -177,7 +184,7 @@ function CategoryDrawer({ open, handleClose, categoryId, onRefresh }) {
                 <TextField
                   type="number"
                   {...register("gstPercent")}
-                  placeholder="Enter GST percentage"
+                  placeholder="Enter GST percentage*"
                   {...field}
                   size="small"
                   fullWidth

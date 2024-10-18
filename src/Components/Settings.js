@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Box, Button, Card, CardContent, TextField, Typography, Avatar } from '@mui/material';
 import { styled } from '@mui/system';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { saveStoreDetails } from '../Service/StoreDetails.api';
+import CustomSnackbar, {successSnackbar, errorSnackbar} from '../Common/Snackbar';
 
 const StyledCard = styled(Card)({
   maxWidth: 500,
@@ -62,6 +63,7 @@ const StyledButton = styled(Button)({
 });
 
 const Settings = () => {
+  const snackbarRef = useRef();
   const [orgName, setOrgName] = useState('');
   const [orgNo, setOrgNo] = useState('');
   const [orgAddress, setOrgAddress] = useState('');
@@ -86,7 +88,9 @@ const Settings = () => {
     try {
       const response = await saveStoreDetails(data);
       console.log(response);
+      successSnackbar("Store details saved!");
     } catch (error) {
+      successSnackbar("Error saving store details");
       console.log(error);
       throw error;
     }
@@ -116,7 +120,7 @@ const Settings = () => {
         </Box>
 
         <StyledTextField
-          label="Organization Name"
+          label="Organization Name*"
           variant="outlined"
           fullWidth
           value={orgName}
@@ -124,7 +128,7 @@ const Settings = () => {
         />
 
         <StyledTextField
-          label="Organization Number"
+          label="Organization Number*"
           variant="outlined"
           fullWidth
           value={orgNo}
@@ -132,7 +136,7 @@ const Settings = () => {
         />
         
         <StyledTextField
-          label="Organization Address"
+          label="Organization Address*"
           variant="outlined"
           fullWidth
           value={orgAddress}
@@ -147,6 +151,7 @@ const Settings = () => {
           Save
         </StyledButton>
       </CardContent>
+      <CustomSnackbar ref={snackbarRef}/>
     </StyledCard>
   );
 };

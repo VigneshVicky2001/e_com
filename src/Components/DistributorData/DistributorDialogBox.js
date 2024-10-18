@@ -123,7 +123,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh }) {
                           <TextField
                             type="text"
                             {...register("name")}
-                            placeholder="Enter name"
+                            placeholder="Enter name*"
                             {...field}
                             size="small"
                             fullWidth
@@ -151,7 +151,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh }) {
                           <TextField
                             type="text"
                             {...register("contactInfo")}
-                            placeholder="Enter contact info"
+                            placeholder="Enter contact info*"
                             {...field}
                             size="small"
                             fullWidth
@@ -180,7 +180,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh }) {
                           <TextField
                             type="text"
                             {...register("address")}
-                            placeholder="Enter address"
+                            placeholder="Enter address*"
                             {...field}
                             size="small"
                             fullWidth
