@@ -16,7 +16,7 @@ export default function Category() {
   const [error, setError] = useState(null);
   const [categoryId, setCategoryId] = useState(null);
 
-  const snackbarRef = useRef(null);  // Snackbar ref to trigger messages from the parent
+  const snackbarRef = useRef(null);
 
   const filters = useMemo(() => ({
     page,
@@ -68,13 +68,12 @@ export default function Category() {
     fetchCategories();
   };
 
-// Pass snackbarRef when calling the successSnackbar or errorSnackbar
 const showSuccessSnackbar = (message) => {
-  successSnackbar(message, snackbarRef);  // Pass snackbarRef as a second argument
+  successSnackbar(message, snackbarRef);
 };
 
 const showErrorSnackbar = (message) => {
-  errorSnackbar(message, snackbarRef);  // Pass snackbarRef as a second argument
+  errorSnackbar(message, snackbarRef);
 };
 
   return (
@@ -153,8 +152,8 @@ const showErrorSnackbar = (message) => {
         handleClose={handleCloseDialog} 
         categoryId={categoryId} 
         onRefresh={handleRefresh}
-        showSuccessSnackbar={showSuccessSnackbar}  // Pass success handler
-        showErrorSnackbar={showErrorSnackbar}  // Pass error handler
+        showSuccessSnackbar={showSuccessSnackbar}
+        showErrorSnackbar={showErrorSnackbar}
       />
 
       <CustomSnackbar ref={snackbarRef} />

@@ -164,7 +164,6 @@ const CategoryTable = ({ categories, onEdit, onRefresh, page, rowsPerPage  }) =>
         </TableBody>
       </Table>
 
-      {/* Confirmation dialog for status change */}
       <Dialog
         open={DialogOpen}
         onClose={handleCloseDialog}
