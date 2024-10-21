@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Drawer, Button, Typography, TextField, Select, MenuItem, FormControl, Grid2, Box, FormHelperText } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { addItem, updateItem, getItemById } from '../../Service/Item.api';
 import { getCategoriesDropdown } from '../../Service/Category.api';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ItemValidation } from '../../Common/Validation';
-import CustomSnackbar, {successSnackbar, errorSnackbar} from '../../Common/Snackbar';
 
-function ItemDrawer({ open, handleClose, itemId, onRefresh }) {
-  const snackbarRef = useRef();
+function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar, showErrorSnackbar }) {
   const { 
     control, 
     handleSubmit, 
@@ -85,31 +83,31 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh }) {
       updateItem(updatePayload)
         .then(response => {
           if (response?.error?.data?.message) {
-            errorSnackbar(`Error: ${response.error.data.message}`);
+            showErrorSnackbar(`Error: ${response.error.data.message}`);
           } else {
-            successSnackbar('Success');
+            showSuccessSnackbar("Item updated successfully");
             onRefresh();
             reset();
             handleClose();
           }
         })
         .catch(error => {
-          errorSnackbar('ERROR bro');
+          showErrorSnackbar("Error while updating item");
         });
     } else {
       addItem(createPayload)
         .then(response => {
           if (response?.error?.data?.message) {
-            errorSnackbar(`Error: ${response.error.data.message}`);
+            showErrorSnackbar(`Error: ${response.error.data.message}`);
           } else {
-            successSnackbar('Success');
+            showSuccessSnackbar("Item added successfully");
             onRefresh();
             reset();
             handleClose();
           }
         })
         .catch(error => {
-          errorSnackbar('ERROR bro');
+          showErrorSnackbar("Error while adding item");
         });
     }
   };
@@ -352,7 +350,6 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh }) {
             </Button>
           </Box>
         </form>
-        <CustomSnackbar ref={snackbarRef}/>
       </Drawer>
   );
 }

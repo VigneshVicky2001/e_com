@@ -21,6 +21,7 @@ const RestockHistoryTable = ({ historyData, loading, error, onEdit }) => {
             <TableCell>Type</TableCell>
             <TableCell>Quantity</TableCell>    
             <TableCell>Distributor Name</TableCell>
+            <TableCell>Buying Price</TableCell>
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -59,6 +60,7 @@ const RestockHistoryTable = ({ historyData, loading, error, onEdit }) => {
                 <TableCell>{data.adjustmentType}</TableCell>
                 <TableCell>{data.adjustmentQuantity}</TableCell>
                 <TableCell>{data.distibutorName}</TableCell>
+                <TableCell>{data.buyingPrice}</TableCell>
                 <TableCell>
                   <Tooltip title="Edit">
                     <IconButton onClick={() => onEdit(data.distibutorId)} size="small" color="primary">

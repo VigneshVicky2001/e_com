@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Box, Typography, Select, MenuItem, FormControlLabel, Switch, TextField, Button, IconButton, Paper } from '@mui/material';
 import TablePagination from '@mui/material/TablePagination';
 import DistributorDataTable from './DistributorDataTable';
@@ -6,6 +6,7 @@ import useProgressBar from '../../Common/ProgressBar';
 import { start } from 'nprogress';
 import { getAllDistributors } from '../../Service/Distributor.api';
 import DistributorDialogBox from './DistributorDialogBox';
+import CustomSnackbar, { successSnackbar, errorSnackbar } from '../../Common/Snackbar';
 
 export default function DistributorData() {
   const { startProgress, stopProgress } = useProgressBar();
@@ -16,6 +17,7 @@ export default function DistributorData() {
   const [distributorId, setDistributorId] = useState(null);
   const [distributorData, setDistributorData] = useState(null);
   const [DialogOpen, setDialogOpen] = useState(false);
+  const snackbarRef = useRef(null);
 
   const filters = useMemo(() => ({
 
@@ -60,7 +62,15 @@ export default function DistributorData() {
   const handleEdit = (distributorId) => {
     setDistributorId(distributorId);
     setDialogOpen(true);
-  }
+  };
+
+  const showSuccessSnackbar = (message) => {
+    successSnackbar(message, snackbarRef);
+  };
+  
+  const showErrorSnackbar = (message) => {
+    errorSnackbar(message, snackbarRef);
+  };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, padding: 3 }}>
@@ -108,7 +118,15 @@ export default function DistributorData() {
           />
         </Box>
       )}
-      <DistributorDialogBox open={DialogOpen} handleClose={handleCloseDialog} distributorId={distributorId} onRefresh={handleRefresh}/>
+      <DistributorDialogBox 
+        open={DialogOpen} 
+        handleClose={handleCloseDialog} 
+        istributorId={distributorId} 
+        onRefresh={handleRefresh}
+        showSuccessSnackbar={showSuccessSnackbar}
+        showErrorSnackbar={showErrorSnackbar}
+      />
+      <CustomSnackbar ref={snackbarRef} />
     </Box>
   );
 }

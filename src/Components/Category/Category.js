@@ -68,13 +68,13 @@ export default function Category() {
     fetchCategories();
   };
 
-const showSuccessSnackbar = (message) => {
-  successSnackbar(message, snackbarRef);
-};
+  const showSuccessSnackbar = (message) => {
+    successSnackbar(message, snackbarRef);
+  };
 
-const showErrorSnackbar = (message) => {
-  errorSnackbar(message, snackbarRef);
-};
+  const showErrorSnackbar = (message) => {
+    errorSnackbar(message, snackbarRef);
+  };
 
   return (
     <Box sx={{

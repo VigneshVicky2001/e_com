@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Box, Typography, Button, TextField, Select, MenuItem, TablePagination } from '@mui/material';
 import { getItems } from '../../Service/Item.api';
 import ItemDialogBox from './ItemDialogBox';
 import ItemTable from './ItemTable';
 import { FormControl, InputLabel } from '@mui/material';
 import useProgressBar from '../../Common/ProgressBar';
+import CustomSnackbar, { successSnackbar, errorSnackbar } from '../../Common/Snackbar';
 
 export default function Item() {
   const { startProgress, stopProgress } = useProgressBar();
@@ -21,6 +22,7 @@ export default function Item() {
   const [sortDirection, setSortDirection] = useState('ASC');
   const [totalItems, setTotalItems] = useState(0);
   const [DialogOpen, setDialogOpen] = useState(false);
+  const snackbarRef = useRef(null);
 
   const filters = useMemo(() => ({
     page,
@@ -99,6 +101,14 @@ export default function Item() {
     setPage(0);
   };
 
+  const showSuccessSnackbar = (message) => {
+    successSnackbar(message, snackbarRef);
+  };
+  
+  const showErrorSnackbar = (message) => {
+    errorSnackbar(message, snackbarRef);
+  };
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -107,24 +117,6 @@ export default function Item() {
           Add Item
         </Button>
       </Box>
-      
-      {/* <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-        <FormControl sx={{ minWidth: 120 }}>
-          <InputLabel>Status</InputLabel>
-          <Select
-            label="Status"
-            value={status}            onChange={(e) => {
-              setStatus(e.target.value);
-
-              setPage(0);
-            }}
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="active">Active</MenuItem>
-            <MenuItem value="out of stock">Out of Stock</MenuItem>
-          </Select>
-        </FormControl>
-      </Box> */}
 
       {loading ? (
         <Typography>Loading...</Typography>
@@ -153,7 +145,15 @@ export default function Item() {
         </>
       )}
 
-      <ItemDialogBox open={DialogOpen} handleClose={handleCloseDialog} itemId={itemId} onRefresh={handleRefresh} />
+      <ItemDialogBox
+        open={DialogOpen}
+        handleClose={handleCloseDialog}
+        itemId={itemId}
+        onRefresh={handleRefresh}
+        showSuccessSnackbar={showSuccessSnackbar}
+        showErrorSnackbar={showErrorSnackbar}
+      />
+      <CustomSnackbar ref={snackbarRef} />      
     </Box>
   );
 }

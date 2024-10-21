@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Box, Typography, Select, MenuItem, FormControlLabel, Switch, TextField, Button, IconButton, Paper } from '@mui/material';
 import TablePagination from '@mui/material/TablePagination';
 import { getAllRestockHistory } from '../../Service/Restock.api';
 import useProgressBar from '../../Common/ProgressBar';
 import RestockHistoryTable from './RestockHistoryTable';
 import RHDialogBox from './RHDialogBox';
+import CustomSnackbar, { successSnackbar, errorSnackbar } from '../../Common/Snackbar';
 
 export default function RestockHistory() {
   const { startProgress, stopProgress } = useProgressBar();
@@ -15,6 +16,7 @@ export default function RestockHistory() {
   const [historyData, setHistoryData] = useState(null);
   const [DialogOpen, setDialogOpen] = useState(false);
   const [RHId, setRHId] = useState(null);
+  const snackbarRef = useRef(null);
 
   const filters = useMemo(() => ({
 
@@ -60,7 +62,15 @@ export default function RestockHistory() {
   const handleEdit = (RHId) => {
     setRHId(RHId);
     setDialogOpen(true);
-  }
+  };
+
+  const showSuccessSnackbar = (message) => {
+    successSnackbar(message, snackbarRef);
+  };
+  
+  const showErrorSnackbar = (message) => {
+    errorSnackbar(message, snackbarRef);
+  };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, padding: 3 }}>
@@ -108,7 +118,15 @@ export default function RestockHistory() {
           />
         </Box>
       )}
-      <RHDialogBox open={DialogOpen} handleClose={handleCloseDialog} RHId={RHId} onRefresh={handleRefresh}/>
+      <RHDialogBox 
+        open={DialogOpen} 
+        handleClose={handleCloseDialog} 
+        RHId={RHId} 
+        onRefresh={handleRefresh}
+        showSuccessSnackbar={showSuccessSnackbar}
+        showErrorSnackbar={showErrorSnackbar}
+      />
+      <CustomSnackbar ref={snackbarRef} />
     </Box>
   );
 }

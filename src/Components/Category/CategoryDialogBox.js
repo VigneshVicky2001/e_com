@@ -1,13 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { Drawer, Button, Typography, TextField, Box, Grid } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { addCategory, getCategoryById, updateCategory } from '../../Service/Category.api';
 import { CategoryValidation } from '../../Common/Validation';
 import { yupResolver } from "@hookform/resolvers/yup";
-import CustomSnackbar, { successSnackbar, errorSnackbar } from '../../Common/Snackbar';
 
 function CategoryDrawer({ open, handleClose, categoryId, onRefresh, showSuccessSnackbar, showErrorSnackbar }) {
-  const snackbarRef = useRef();
   const { 
     control, 
     handleSubmit, 
@@ -223,7 +221,6 @@ function CategoryDrawer({ open, handleClose, categoryId, onRefresh, showSuccessS
           </Button>
         </Box>
       </form>
-      <CustomSnackbar ref={snackbarRef}/>
     </Drawer>
   );
 }

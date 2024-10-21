@@ -6,10 +6,8 @@ import { getAllItemAndName } from '../../Service/Item.api';
 import { getDistributorNameAndId } from '../../Service/Distributor.api';
 import { StockHistoryValidation } from '../../Common/Validation';
 import { yupResolver } from '@hookform/resolvers/yup';
-import CustomSnackbar, {successSnackbar, errorSnackbar} from '../../Common/Snackbar';
 
-function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
-    const snackbarRef = useRef();
+function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, showErrorSnackbar }) {
     const [distributors, setDistributors] = useState([]);
     const [items, setItems] = useState([]);
     const { 
@@ -92,31 +90,31 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
           updateRestockHistory(updatePayload)
             .then((response) => {
               if (response?.error?.data?.message) {
-                errorSnackbar("error");
+                showErrorSnackbar("error");
               } else {
-                successSnackbar("History updated successfully!");
+                showSuccessSnackbar("History updated successfully!");
                 onRefresh();
                 reset();
                 handleClose();
               }
             })
             .catch((error) => {
-              errorSnackbar("ERROR : ", error);
+              showErrorSnackbar("ERROR : ", error);
             });
         } else {
           addRestockHistory(createPayload)
             .then((response) => {
               if (response?.error?.data?.message) {
-                errorSnackbar("error", `${response.error.data.message}`, "");
+                showErrorSnackbar("error", `${response.error.data.message}`, "");
               } else {
-                successSnackbar("History added successfully!");
+                showSuccessSnackbar("History added successfully!");
                 onRefresh();
                 reset();
                 handleClose();
               }
             })
             .catch((error) => {
-              errorSnackbar("ERROR");
+              showErrorSnackbar("ERROR");
             });
         }
       };
@@ -372,9 +370,8 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh }) {
             Save
           </Button>
         </Box>
-            </form>
-            <snackbarRef ref={snackbarRef}/>
-        </Drawer>
+      </form>
+    </Drawer>
   );
 }
 

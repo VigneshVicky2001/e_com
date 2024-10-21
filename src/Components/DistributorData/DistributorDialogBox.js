@@ -4,10 +4,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { addDistributor, updateDistributor, getDistributorById } from '../../Service/Distributor.api';
 import { DistributorValidation } from '../../Common/Validation';
 import { yupResolver } from '@hookform/resolvers/yup';
-import CustomSnackbar, {successSnackbar, errorSnackbar} from '../../Common/Snackbar';
 
-function DistributorDialogBox({ open, handleClose, distributorId, onRefresh }) {
-    const snackbarRef = useRef();
+function DistributorDialogBox({ open, handleClose, distributorId, onRefresh, showSuccessSnackbar, showErrorSnackbar }) {
     const { 
       control,
       handleSubmit, 
@@ -56,31 +54,31 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh }) {
             updateDistributor(updatePayload)
             .then((response) => {
               if (response?.error?.data?.message) {
-                errorSnackbar("error");
+                showErrorSnackbar("error");
               } else {
-                successSnackbar("success");
+                showSuccessSnackbar("Distributor updated successfully!");
                 onRefresh();
                 reset();
                 handleClose();
               }
             })
             .catch((error) => {
-              errorSnackbar("ERROR LOL: ", error);
+              showErrorSnackbar("ERROR LOL: ", error);
             });
         } else {
             addDistributor(createPayload)
             .then((response) => {
               if (response?.error?.data?.message) {
-                errorSnackbar("error", `${response.error.data.message}`, "");
+                showErrorSnackbar("error", `${response.error.data.message}`, "");
               } else {
-                successSnackbar("Success!");
+                showSuccessSnackbar("Distributor added successfully!");
                 onRefresh();
                 reset();
                 handleClose();
               }
             })
             .catch((error) => {
-              errorSnackbar("ERROR");
+              showErrorSnackbar("ERROR");
             });
         }
       };
@@ -224,8 +222,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh }) {
             Save
           </Button>
         </Box>
-            </form>
-            <snackbarRef ref={snackbarRef}/>
+        </form>
     </Drawer>
   );
 }
