@@ -149,7 +149,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                 <Grid2 container spacing={2} sx={{ width: "92%" }}>
                     <Grid2 xs={6}>
                       <Typography variant="body1" sx={{ color: '#ccc' }}>
-                        Adjustment Qty
+                        Adjustment Qty*
                       </Typography>
                       <Controller
                         name="adjustment_quantity"
@@ -159,7 +159,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                           <TextField
                             type="number"
                             {...register("adjustment_quantity")}
-                            placeholder="Enter Quantity*"
+                            placeholder="Enter Quantity"
                             {...field}
                             size="small"
                             fullWidth
@@ -177,7 +177,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                     </Grid2>
                     <Grid2 xs={6}>
                         <Typography variant="body1" sx={{ color: '#ccc' }}>
-                            Adjustment Type
+                            Adjustment Type*
                         </Typography>
                         <Controller
                           name="adjustment_type"
@@ -203,7 +203,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                                 }}
                               >
                                 <MenuItem value="" disabled>
-                                  Select type*
+                                  Select type
                                 </MenuItem>
                                 <MenuItem value="restock">restock</MenuItem>
                                 <MenuItem value="return to supplier">return to supplier</MenuItem>
@@ -221,7 +221,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                 <Grid2 container spacing={2} sx={{ marginTop: "20px", width: "92%" }}>
                     <Grid2 xs={6}>
                         <Typography variant="body1" sx={{ color: '#ccc' }}>
-                          Distributor
+                          Distributor*
                         </Typography>
                         <Controller
                           name="distibutorId"
@@ -248,7 +248,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                                 }}
                               >
                                 <MenuItem value="" disabled>
-                                  Select distributor*
+                                  Select distributor
                                 </MenuItem>
                                 {distributors && distributors.length > 0 ? (
                                   distributors.map((distributor) => (
@@ -273,7 +273,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                 <Grid2 container spacing={2} sx={{ marginTop: "20px", width: "92%" }}>
                     <Grid2 xs={6}>
                         <Typography variant="body1" sx={{ color: '#ccc' }}>
-                            Buying Price
+                            Buying Price*
                         </Typography>
                             <Controller
                             name="buyingPrice"
@@ -283,7 +283,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                             <TextField
                                 type="number"
                                 {...register("buyingPrice")}
-                                placeholder="Enter Price*"
+                                placeholder="Enter Price"
                                 {...field}
                                 size="small"
                                 fullWidth
@@ -300,7 +300,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                         />
                         </Grid2>
                         <Grid2 xs={6}>
-                        <Typography>Item</Typography>
+                        <Typography>Item*</Typography>
                         <Controller
                           name="itemId"
                           control={control}
@@ -325,7 +325,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                                 }}
                               >
                                 <MenuItem value="" disabled>
-                                  Select Items*
+                                  Select Items
                                 </MenuItem>
                                 {items && items.length > 0 ? (
                                   items.map((item) => (

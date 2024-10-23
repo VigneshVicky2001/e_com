@@ -114,7 +114,7 @@ function CategoryDrawer({ open, handleClose, categoryId, onRefresh, showSuccessS
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <Grid container direction="column" spacing={2}>
           <Grid item>
-            <Typography variant="body1" sx={{ color: '#ccc' }}>Name</Typography>
+            <Typography variant="body1" sx={{ color: '#ccc' }}>Name*</Typography>
             <Controller
               name="name"
               control={control}
@@ -123,7 +123,7 @@ function CategoryDrawer({ open, handleClose, categoryId, onRefresh, showSuccessS
                 <TextField
                   type="text"
                   {...register("name")}
-                  placeholder="Enter name*"
+                  placeholder="Enter name"
                   {...field}
                   size="small"
                   fullWidth
@@ -140,7 +140,7 @@ function CategoryDrawer({ open, handleClose, categoryId, onRefresh, showSuccessS
           </Grid>
 
           <Grid item>
-            <Typography variant="body1" sx={{ color: '#ccc' }}>Description</Typography>
+            <Typography variant="body1" sx={{ color: '#ccc' }}>Description*</Typography>
             <Controller
               name="description"
               control={control}
@@ -149,7 +149,7 @@ function CategoryDrawer({ open, handleClose, categoryId, onRefresh, showSuccessS
                 <TextField
                   type="text"
                   {...register("description")}
-                  placeholder="Enter description*"
+                  placeholder="Enter description"
                   {...field}
                   size="small"
                   fullWidth
@@ -166,7 +166,7 @@ function CategoryDrawer({ open, handleClose, categoryId, onRefresh, showSuccessS
           </Grid>
 
           <Grid item>
-            <Typography variant="body1" sx={{ color: '#ccc' }}>GST Percent</Typography>
+            <Typography variant="body1" sx={{ color: '#ccc' }}>GST Percent*</Typography>
             <Controller
               name="gstPercent"
               control={control}
@@ -175,7 +175,7 @@ function CategoryDrawer({ open, handleClose, categoryId, onRefresh, showSuccessS
                 <TextField
                   type="number"
                   {...register("gstPercent")}
-                  placeholder="Enter GST percentage*"
+                  placeholder="Enter GST percentage"
                   {...field}
                   size="small"
                   fullWidth

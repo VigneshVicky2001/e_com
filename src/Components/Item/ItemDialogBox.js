@@ -140,7 +140,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <Grid2  container direction="column" spacing={2}>
             <Grid2 xs={12}>
-              <Typography variant="body1" sx={{ color: '#ccc' }}>Name</Typography>
+              <Typography variant="body1" sx={{ color: '#ccc' }}>Name*</Typography>
               <Controller
                 name="name"
                 control={control}
@@ -149,7 +149,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
                   <TextField
                     type="text"
                     {...register('name')}
-                    placeholder="Enter name*"
+                    placeholder="Enter name"
                     {...field}
                     size="small"
                     fullWidth
@@ -166,7 +166,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
             </Grid2>
 
             <Grid2 xs={6}>
-              <Typography variant="body1" sx={{ color: '#ccc' }}>MRP</Typography>
+              <Typography variant="body1" sx={{ color: '#ccc' }}>MRP*</Typography>
               <Controller
                 name="mrpPrice"
                 control={control}
@@ -175,7 +175,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
                   <TextField
                     type="number"
                     {...register('mrpPrice')}
-                    placeholder="Enter MRP*"
+                    placeholder="Enter MRP"
                     {...field}
                     size="small"
                     fullWidth
@@ -192,7 +192,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
             </Grid2>
 
             <Grid2 xs={6}>
-              <Typography variant="body1" sx={{ color: '#ccc' }}>Selling Price</Typography>
+              <Typography variant="body1" sx={{ color: '#ccc' }}>Selling Price*</Typography>
               <Controller
                 name="sellingPrice"
                 control={control}
@@ -201,7 +201,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
                   <TextField
                     type="number"
                     {...register('sellingPrice')}
-                    placeholder="Enter Selling Price*"
+                    placeholder="Enter Selling Price"
                     {...field}
                     size="small"
                     fullWidth
@@ -218,7 +218,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
             </Grid2>
 
             <Grid2 xs={6}>
-              <Typography variant="body1" sx={{ color: '#ccc' }}>Stock Quantity</Typography>
+              <Typography variant="body1" sx={{ color: '#ccc' }}>Stock Quantity*</Typography>
               <Controller
                 name="stockQuantity"
                 control={control}
@@ -227,7 +227,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
                   <TextField
                     type="number"
                     {...register('stockQuantity')}
-                    placeholder="Enter Stock No*"
+                    placeholder="Enter Stock No"
                     {...field}
                     size="small"
                     fullWidth
@@ -244,7 +244,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
             </Grid2>
 
             <Grid2 xs={6}>
-              <Typography variant="body1" sx={{ color: '#ccc' }}>Status</Typography>
+              <Typography variant="body1" sx={{ color: '#ccc' }}>Status*</Typography>
               <Controller
                 name="status"
                 control={control}
@@ -253,7 +253,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
                   <TextField
                     {...register('status')}
                     select
-                    label="Enter Status*"
+                    label="Enter Status"
                     {...field}
                     size="small"
                     fullWidth
@@ -273,7 +273,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
             </Grid2>
 
             <Grid2 xs={12}>
-              <Typography variant="body1" sx={{ color: '#ccc' }}>Category</Typography>
+              <Typography variant="body1" sx={{ color: '#ccc' }}>Category*</Typography>
               <FormControl 
                 fullWidth 
                 size="small"
@@ -297,7 +297,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
                         }}
                       >
                         <MenuItem value="" disabled>
-                          Select category*
+                          Select category
                         </MenuItem>
                         {categories && categories.length > 0 ? (
                           categories.map(category => (

@@ -17,6 +17,8 @@ const AddBill = () => {
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [customerEmail, setCustomerEmail] = useState('');
   const [customerAddress, setCustomerAddress] = useState(''); 
+  const [phoneError, setPhoneError] = useState('');
+  const [phoneTouched, setPhoneTouched] = useState(false);
 
   useEffect(() => {
     fetchItems();
@@ -91,7 +93,27 @@ const AddBill = () => {
   const discountInAmount = (totalAmount * discountPercentage) / 100;
   const finalAmount = totalAmount - discountInAmount;
 
+  const handlePhoneNumberChange = (e) => {
+    const value = e.target.value;
+    setCustomerPhoneNumber(value);
+  };
+
+  const handlePhoneBlur = () => {
+    setPhoneTouched(true);
+    if (customerPhoneNumber.length !== 10 || !/^\d+$/.test(customerPhoneNumber)) {
+      setPhoneError("Phone number must be exactly 10 digits.");
+    } else {
+      setPhoneError('');
+    }
+  };
+
   const handleProceedToPayment = async () => {
+
+    if (phoneError) {
+      errorSnackbar("Please fix the errors before proceeding to payment", snackbarRef);
+      return;
+    }
+
     const hasItemsInCart = cart.some((cartItem) => cartItem.item !== null);
     if (!customerName) {
       errorSnackbar('Customer name is required', snackbarRef);
@@ -315,7 +337,8 @@ const AddBill = () => {
       <TextField
         label="Phone Number"
         value={customerPhoneNumber}
-        onChange={(e) => setCustomerPhoneNumber(e.target.value)}
+        onChange={handlePhoneNumberChange}
+        onBlur={handlePhoneBlur}
         required
         fullWidth
         sx={{
@@ -325,6 +348,8 @@ const AddBill = () => {
             borderRadius: 2,
           },
         }}
+        error={phoneTouched && !!phoneError}
+        helperText={phoneTouched && phoneError}
       />
 
       <TextField

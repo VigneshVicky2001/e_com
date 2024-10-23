@@ -111,7 +111,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh, sho
                 <Grid2 container spacing={2} sx={{ width: "92%" }}>
                     <Grid2 xs={6}>
                       <Typography variant="body1" sx={{ color: '#ccc' }}>
-                        Name
+                        Name*
                       </Typography>
                       <Controller
                         name="name"
@@ -121,7 +121,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh, sho
                           <TextField
                             type="text"
                             {...register("name")}
-                            placeholder="Enter name*"
+                            placeholder="Enter name"
                             {...field}
                             size="small"
                             fullWidth
@@ -140,7 +140,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh, sho
 
                     <Grid2 xs={6}>
                         <Typography variant="body1" sx={{ color: '#ccc' }}>
-                            Contact info
+                            Contact info*
                         </Typography>
                         <Controller
                         name="contactInfo"
@@ -150,7 +150,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh, sho
                           <TextField
                             type="text"
                             {...register("contactInfo")}
-                            placeholder="Enter contact info*"
+                            placeholder="Enter contact info"
                             {...field}
                             size="small"
                             fullWidth
@@ -170,7 +170,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh, sho
                 <Grid2 container spacing={2} sx={{ marginTop: "20px", width: "92%" }}>
                     <Grid2 xs={6}>
                         <Typography variant="body1" sx={{ color: '#ccc' }}>
-                          Address
+                          Address*
                         </Typography>
                         <Controller
                         name="address"
@@ -180,7 +180,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh, sho
                           <TextField
                             type="text"
                             {...register("address")}
-                            placeholder="Enter address*"
+                            placeholder="Enter address"
                             {...field}
                             size="small"
                             fullWidth
