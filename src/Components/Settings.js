@@ -3,7 +3,7 @@ import { Box, Button, Card, CardContent, TextField, Typography, Avatar } from '@
 import { styled } from '@mui/system';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { saveStoreDetails, getStoreDetailsById, updateStoreDetails } from '../Service/StoreDetails.api';
-import CustomSnackbar, {successSnackbar, errorSnackbar} from '../Common/Snackbar';
+import CustomSnackbar, { successSnackbar, errorSnackbar } from '../Common/Snackbar';
 
 const StyledCard = styled(Card)({
   maxWidth: 500,
@@ -79,18 +79,18 @@ const Settings = ({ onLogoUpdate }) => {
         setOrgName(response.storeName);
         setOrgNo(response.storePhoneNumber);
         setOrgAddress(response.storeAddress);
-        
+
         const byteString = atob(response.storeLogo);
         const arrayBuffer = new ArrayBuffer(byteString.length);
         const uint8Array = new Uint8Array(arrayBuffer);
-        
+
         for (let i = 0; i < byteString.length; i++) {
           uint8Array[i] = byteString.charCodeAt(i);
         }
-  
+
         const blob = new Blob([uint8Array], { type: 'image/png' });
         const file = new File([blob], "store-logo.png", { type: 'image/png' });
-  
+
         setLogo(file);
         setLogoPreview(`data:image/png;base64,${response.storeLogo}`);
       } catch (error) {
@@ -98,7 +98,7 @@ const Settings = ({ onLogoUpdate }) => {
         errorSnackbar("Error loading store details");
       }
     };
-  
+
     fetchStoreDetails();
   }, [id]);
 
@@ -110,51 +110,36 @@ const Settings = ({ onLogoUpdate }) => {
     }
   };
 
-  const validatePhoneNumber = (phoneNumber) => {
-    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-    if (!phoneNumber.match(phoneRegex)) {
-      setPhoneError("Please enter a valid phone number with the country code.");
-      return false;
+  const handlePhoneNumberChange = (e) => {
+    const value = e.target.value;
+    setOrgNo(value);
+    if (value.length !== 10 || !/^\d+$/.test(value)) {
+      setPhoneError("Phone number must be exactly 10 digits.");
+    } else {
+      setPhoneError('');
     }
-    setPhoneError('');
-    return true;
   };
 
   const handleSaveChanges = async () => {
-    if(!validatePhoneNumber(orgNo)){
+    if (phoneError) {
+      errorSnackbar("Please fix the errors before saving.", snackbarRef);
       return;
     }
-    if(id){
-      const data = new FormData();
-      data.append('id', id)
-      data.append('name', orgName);
-      data.append('phoneNumber', orgNo);
-      data.append('address', orgAddress);
-      data.append('logo', logo);
-    
-      try {
-        const response = await updateStoreDetails(data);
-        onLogoUpdate();
-        successSnackbar("Store updated saved!", snackbarRef);
-      } catch (error) {
-        errorSnackbar("Error updating store details", snackbarRef);
-        console.log(error);
-      }
-    } else {
-      const data = new FormData();
-      data.append('name', orgName);
-      data.append('phoneNumber', orgNo);
-      data.append('address', orgAddress);
-      data.append('logo', logo);
-    
-      try {
-        const response = await saveStoreDetails(id, data);
-        console.log(response);
-        successSnackbar("Store details saved!", snackbarRef);
-      } catch (error) {
-        errorSnackbar("Error saving store details", snackbarRef);
-        console.log(error);
-      }
+
+    const data = new FormData();
+    data.append('id', id);
+    data.append('name', orgName);
+    data.append('phoneNumber', orgNo);
+    data.append('address', orgAddress);
+    data.append('logo', logo);
+
+    try {
+      const response = await updateStoreDetails(data);
+      onLogoUpdate();
+      successSnackbar("Store updated saved!", snackbarRef);
+    } catch (error) {
+      errorSnackbar("Error updating store details", snackbarRef);
+      console.log(error);
     }
   };
 
@@ -194,11 +179,11 @@ const Settings = ({ onLogoUpdate }) => {
           variant="outlined"
           fullWidth
           value={orgNo}
+          onChange={handlePhoneNumberChange}
           error={!!phoneError}
           helperText={phoneError}
-          onChange={(e) => setOrgNo(e.target.value)}
         />
-        
+
         <StyledTextField
           label="Organization Address*"
           variant="outlined"
@@ -212,10 +197,10 @@ const Settings = ({ onLogoUpdate }) => {
           color="primary"
           onClick={handleSaveChanges}
         >
-        {id ? "Update" : "Save"}
+          {id ? "Update" : "Save"}
         </StyledButton>
       </CardContent>
-      <CustomSnackbar ref={snackbarRef}/>
+      <CustomSnackbar ref={snackbarRef} />
     </StyledCard>
   );
 };
