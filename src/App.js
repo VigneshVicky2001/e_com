@@ -51,7 +51,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '98vh' }}>
         <Header toggleSidebar={toggleSidebar} showLogout={!isLoginPage} logoUrl={logoUrl} />
-        <div style={{ flex: 1, display: 'flex' }}>
+        <div style={{ flex: 1, display: 'flex', overflowY: 'auto' }}>
           {!isLoginPage && <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} isMinimized={sidebarOpen} />}
           <div style={{ flexGrow: 1, marginTop: '70px' }}>
             <Routes>

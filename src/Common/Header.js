@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const GlassAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: '#333',
   height: '70px',
+  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
 }));
 
 const Header = ({ toggleSidebar, showLogout, logoUrl }) => {
@@ -19,8 +20,8 @@ const Header = ({ toggleSidebar, showLogout, logoUrl }) => {
 
   return (
     <GlassAppBar position="fixed" className="header">
-      <Toolbar sx={{ height: '100%' }}>
-        <IconButton
+      <Toolbar sx={{ height: '100%', padding: '0 20px' }}>
+      <IconButton
           edge="start"
           color="inherit"
           aria-label="menu"
