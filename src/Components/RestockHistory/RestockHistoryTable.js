@@ -14,7 +14,7 @@ const RestockHistoryTable = ({ historyData, loading, error, onEdit, onSortToggle
       elevation={3}
       sx={{
         marginTop: 1,
-        maxHeight: 800,
+        maxHeight: '60vh',
         overflowY: 'auto',
       }}
     >
@@ -25,6 +25,7 @@ const RestockHistoryTable = ({ historyData, loading, error, onEdit, onSortToggle
           '& thead th': {
             fontWeight: 'bold',
             background: 'rgba(0, 0, 0, 0.1)',
+            backgroundColor: '#e5e5e5',
           },
           '& tbody tr:hover': {
             background: 'rgba(255, 255, 255, 0.08)',

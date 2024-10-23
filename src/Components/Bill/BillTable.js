@@ -50,8 +50,7 @@ const BillTable = ({ bills, onPayChange, onStatusChange, loading, error, payment
       component={Paper}
       elevation={3}
       sx={{
-        marginTop: 1,
-        maxHeight: 800,
+        maxHeight: '61vh',
         overflowY: 'auto',
       }}
     >
@@ -62,6 +61,7 @@ const BillTable = ({ bills, onPayChange, onStatusChange, loading, error, payment
           '& thead th': {
             fontWeight: 'bold',
             background: 'rgba(0, 0, 0, 0.1)',
+            backgroundColor: '#e5e5e5',
           },
           '& tbody tr:hover': {
             background: 'rgba(255, 255, 255, 0.08)',

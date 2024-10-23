@@ -17,7 +17,7 @@ const ItemTable = ({ items, onEdit, onView, sortBy, sortDirection, onSort, statu
       elevation={3}
       sx={{
         marginTop: 1,
-        maxHeight: 800,
+        maxHeight: '63vh',
         overflowY: 'auto',
       }}
     >
@@ -28,6 +28,7 @@ const ItemTable = ({ items, onEdit, onView, sortBy, sortDirection, onSort, statu
           '& thead th': {
             fontWeight: 'bold',
             background: 'rgba(0, 0, 0, 0.1)',
+            backgroundColor: '#e5e5e5',
           },
           '& tbody tr:hover': {
             background: 'rgba(255, 255, 255, 0.08)',

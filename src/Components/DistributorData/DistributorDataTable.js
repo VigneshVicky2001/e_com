@@ -12,7 +12,7 @@ const DistributorDataTable = ({ distributorData, loading, error, onEdit }) => {
       elevation={3}
       sx={{
         marginTop: 1,
-        maxHeight: 800,
+        maxHeight: '68vh',
         overflowY: 'auto',
       }}
     >
@@ -23,6 +23,7 @@ const DistributorDataTable = ({ distributorData, loading, error, onEdit }) => {
           '& thead th': {
             fontWeight: 'bold',
             background: 'rgba(0, 0, 0, 0.1)',
+            backgroundColor: '#e5e5e5',
           },
           '& tbody tr:hover': {
             background: 'rgba(255, 255, 255, 0.08)',
@@ -32,7 +33,7 @@ const DistributorDataTable = ({ distributorData, loading, error, onEdit }) => {
             textShadow: '0px 0px 8px rgba(255,255,255,0.3)',
           },
           '& .MuiTableCell-root': {
-            padding: '8px 16px',
+            padding: '12px 16px',
           },
         }}
       >

@@ -29,17 +29,10 @@ export default function Bill() {
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState('ASC');
 
-  // Function to convert IST date to UTC (with Z suffix)
   const formatToUTC = (date) => {
     if (!date) return null;
-    
-    // Create a new Date object in IST
     const dateInIST = new Date(date);
-    
-    // Adjust to UTC by subtracting IST offset (5 hours 30 minutes)
     const utcDate = new Date(dateInIST.getTime() - (5.5 * 60 * 60 * 1000));
-    
-    // Return the UTC date in ISO string format with 'Z'
     return utcDate.toISOString();
   };
 
@@ -116,7 +109,7 @@ export default function Bill() {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, padding: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
           Bills
         </Typography>
@@ -139,23 +132,55 @@ export default function Bill() {
       <Paper elevation={3} sx={{ padding: 2, borderRadius: '8px' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DateTimePicker
-                label="Start Date"
-                value={startDate}
-                onChange={(date) => setStartDate(date)}
-                renderInput={(params) => <TextField {...params} size="small" variant="outlined" sx={{ borderRadius: '8px' }} />}
-              />
-            </LocalizationProvider>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DateTimePicker
+              label="Start Date"
+              value={startDate}
+              onChange={(date) => setStartDate(date)}
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  size: 'small',
+                  sx: {
+                    width: '175px', // Set the width for the field
+                    '& .MuiOutlinedInput-root': {
+                      padding: '4px', // Smaller padding
+                      fontSize: '12px', // Smaller font size
+                      height: '40px', // Control overall height
+                    },
+                    '& .MuiInputBase-input': {
+                      padding: '6px', // Adjust padding within the input field
+                    },
+                  },
+                },
+              }}
+            />
+          </LocalizationProvider>
 
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DateTimePicker
-                label="End Date"
-                value={endDate}
-                onChange={(date) => setEndDate(date)}
-                renderInput={(params) => <TextField {...params} size="small" variant="outlined" sx={{ borderRadius: '8px' }} />}
-              />
-            </LocalizationProvider>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DateTimePicker
+              label="End Date"
+              value={endDate}
+              onChange={(date) => setEndDate(date)}
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  size: 'small',
+                  sx: {
+                    width: '175px',
+                    '& .MuiOutlinedInput-root': {
+                      padding: '4px',
+                      fontSize: '12px',
+                      height: '40px',
+                    },
+                    '& .MuiInputBase-input': {
+                      padding: '6px',
+                    },
+                  },
+                },
+              }}
+            />
+          </LocalizationProvider>
 
             <FormControlLabel
               control={<Switch checked={returned} onChange={(e) => setReturned(e.target.checked)} />}

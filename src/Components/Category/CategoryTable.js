@@ -81,7 +81,7 @@ const CategoryTable = ({ categories, onEdit, onRefresh, page, rowsPerPage  }) =>
       elevation={3}
       sx={{
         marginTop: 1,
-        maxHeight: 800,
+        maxHeight: '65vh',
         overflowY: 'auto',
       }}
     >
@@ -92,6 +92,7 @@ const CategoryTable = ({ categories, onEdit, onRefresh, page, rowsPerPage  }) =>
           '& thead th': {
             fontWeight: 'bold',
             background: 'rgba(0, 0, 0, 0.1)',
+            backgroundColor: '#e5e5e5',
           },
           '& tbody tr:hover': {
             background: 'rgba(255, 255, 255, 0.08)',

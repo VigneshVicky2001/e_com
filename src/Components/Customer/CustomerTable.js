@@ -17,7 +17,7 @@ const CustomerTable = ({ customers, sortBy, sortDirection, onSort }) => {
       elevation={3}
       sx={{
         marginTop: 1,
-        maxHeight: 800,
+        maxHeight: '71vh',
         overflowY: 'auto',
       }}
     >
@@ -28,6 +28,7 @@ const CustomerTable = ({ customers, sortBy, sortDirection, onSort }) => {
           '& thead th': {
             fontWeight: 'bold',
             background: 'rgba(0, 0, 0, 0.1)',
+            backgroundColor: '#e5e5e5',
           },
           '& tbody tr:hover': {
             background: 'rgba(255, 255, 255, 0.08)',
@@ -37,7 +38,7 @@ const CustomerTable = ({ customers, sortBy, sortDirection, onSort }) => {
             textShadow: '0px 0px 8px rgba(255,255,255,0.3)',
           },
           '& .MuiTableCell-root': {
-            padding: '12px 16px',
+            padding: '15px 16px',
           },
         }}
       >
