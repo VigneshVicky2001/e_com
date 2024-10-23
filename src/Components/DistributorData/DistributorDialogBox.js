@@ -91,7 +91,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh, sho
         onClose={handleClose}
         PaperProps={{
           sx: {
-            width: 400,
+            width: 300,
             padding: 3,
             boxShadow: 3,
             backgroundColor: '#1f1f1f',
@@ -106,7 +106,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh, sho
           },
         }}
       >
-        {distributorId ? <DialogTitle>Add Distributor</DialogTitle> : <DialogTitle>Edit Distributor</DialogTitle>}
+        {distributorId ? <DialogTitle>Edit Distributor</DialogTitle> : <DialogTitle>Add Distributor</DialogTitle>}
             <form onSubmit={handleSubmit(handleFormSubmit)}>
                 <Grid2 container spacing={2} sx={{ width: "92%" }}>
                     <Grid2 xs={6}>
@@ -126,6 +126,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh, sho
                             size="small"
                             fullWidth
                             sx={{
+                              width: '300px',
                               input: { color: '#fff' },
                               backgroundColor: '#333',
                               borderRadius: '4px',
@@ -154,6 +155,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh, sho
                             size="small"
                             fullWidth
                             sx={{
+                              width: '300px',
                               input: { color: '#fff' },
                               backgroundColor: '#333',
                               borderRadius: '4px',
@@ -183,6 +185,7 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh, sho
                             size="small"
                             fullWidth
                             sx={{
+                              width: '300px',
                               input: { color: '#fff' },
                               backgroundColor: '#333',
                               borderRadius: '4px',
@@ -195,33 +198,33 @@ function DistributorDialogBox({ open, handleClose, distributorId, onRefresh, sho
                     </Grid2>
                 </Grid2>
                 <Box display="flex" justifyContent="flex-end" mt={3}>
-          <Button
-            onClick={handleClose}
-            variant="outlined"
-            sx={{
-              marginRight: 2,
-              color: '#ccc',
-              borderColor: '#666',
-              "&:hover": {
-                borderColor: '#999',
-              }
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              bgcolor: "#198c39",
-              "&:hover": {
-                bgcolor: "#145d2a",
-              },
-            }}
-          >
-            Save
-          </Button>
-        </Box>
+                  <Button
+                    onClick={handleClose}
+                    variant="outlined"
+                    sx={{
+                      marginRight: 2,
+                      color: '#ccc',
+                      borderColor: '#666',
+                      "&:hover": {
+                        borderColor: '#999',
+                      }
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{
+                      bgcolor: "#198c39",
+                      "&:hover": {
+                        bgcolor: "#145d2a",
+                      },
+                    }}
+                  >
+                    Save
+                  </Button>
+                </Box>
         </form>
     </Drawer>
   );

@@ -25,6 +25,8 @@ export const StockHistoryValidation = yup.object().shape({
 
 export const DistributorValidation = yup.object().shape({
     name: yup.string().required("Distributor name is required"),
-    contactInfo: yup.string().required("Contact info is required"),
+    contactInfo: yup.string()
+        .required('Contact info is required')
+        .matches(/^\d{10}$/, 'Contact info must be exactly 10 digits long'),
     address: yup.string().required("Address is required"),
 });

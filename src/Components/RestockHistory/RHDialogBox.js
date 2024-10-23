@@ -127,7 +127,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
       onClose={handleClose}
       PaperProps={{
         sx: {
-          width: 400,
+          width: 300,
           padding: 3,
           boxShadow: 3,
           backgroundColor: '#1f1f1f',
@@ -164,6 +164,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                             size="small"
                             fullWidth
                             sx={{
+                              width: 300,
                               input: { color: '#fff' },
                               backgroundColor: '#333',
                               borderRadius: '4px',
@@ -195,6 +196,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                                 fullWidth
                                 displayEmpty
                                 sx={{
+                                  width: 300,
                                   input: { color: '#fff' },
                                   backgroundColor: '#333',
                                   borderRadius: '4px',
@@ -239,6 +241,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                                 fullWidth
                                 displayEmpty
                                 sx={{
+                                  width: 300,
                                   input: { color: '#fff' },
                                   backgroundColor: '#333',
                                   borderRadius: '4px',
@@ -285,6 +288,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                                 size="small"
                                 fullWidth
                                 sx={{
+                                  width: 300,
                                   input: { color: '#fff' },
                                   backgroundColor: '#333',
                                   borderRadius: '4px',
@@ -314,6 +318,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                                 fullWidth
                                 displayEmpty
                                 sx={{
+                                  width: 300,
                                   input: { color: '#fff' },
                                   backgroundColor: '#333',
                                   borderRadius: '4px',
