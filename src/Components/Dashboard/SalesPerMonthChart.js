@@ -6,6 +6,7 @@ import { SalesPerMonthOfTheYear } from '../../Service/Dashboard.api';
 const SalesPerMonthChart = () => {
   const salesLineChartRef = useRef();
   const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
   const [year, setYear] = useState(currentYear);
 
   const handleYearChange = (event) => {
@@ -26,10 +27,11 @@ const SalesPerMonthChart = () => {
             return {
               month: monthNames[index],
               sales: Object.values(d)[0],
+              isFuture: year === currentYear && index > currentMonth
             };
           });
-    
-          renderChart(salesTrendData);
+          const filteredSalesData = salesTrendData.filter(d => !d.isFuture);
+          renderChart(filteredSalesData);
         } else {
           console.error('Error: Unexpected response status', result.status);
         }
@@ -66,7 +68,7 @@ const SalesPerMonthChart = () => {
       const line = d3.line()
         .x(d => x(d.month))
         .y(d => y(d.sales))
-        .curve(d3.curveMonotoneX);
+        // .curve(d3.curveMonotoneX);
 
       // Axes
       g.append('g')
@@ -78,7 +80,8 @@ const SalesPerMonthChart = () => {
 
       g.append('g')
         .attr('class', 'y-axis')
-        .call(d3.axisLeft(y))
+        .call(d3.axisLeft(y)
+          .tickFormat(d3.format(".2s")))
         .transition()
         .duration(1000);
 

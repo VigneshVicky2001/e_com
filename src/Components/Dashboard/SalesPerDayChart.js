@@ -7,6 +7,7 @@ const SalesPerDayChart = () => {
   const salesLineChartRef = useRef();
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
+  const currentDay = new Date().getDate();
   const [year, setYear] = useState(currentYear);
   const [month, setMonth] = useState(currentMonth);
 
@@ -29,7 +30,14 @@ const SalesPerDayChart = () => {
             sales: Object.values(d)[0],
           }));
 
-          renderChart(salesTrendData);
+          const filteredSalesData = salesTrendData.filter(d => {
+            if (year === currentYear && month === currentMonth) {
+              return d.day <= currentDay;
+            }
+            return true;
+          });
+
+          renderChart(filteredSalesData);
         }
       } catch (error) {
         console.error('Error fetching sales data:', error);
@@ -63,7 +71,7 @@ const SalesPerDayChart = () => {
       const line = d3.line()
         .x(d => x(d.day))
         .y(d => y(d.sales))
-        .curve(d3.curveMonotoneX);
+        // .curve(d3.curveMonotoneX);
 
       // Axes
       g.append('g')
@@ -75,7 +83,8 @@ const SalesPerDayChart = () => {
 
       g.append('g')
         .attr('class', 'y-axis')
-        .call(d3.axisLeft(y))
+        .call(d3.axisLeft(y)
+          .tickFormat(d3.format(".2s")))
         .transition()
         .duration(1000);
 
