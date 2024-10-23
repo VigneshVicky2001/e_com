@@ -7,8 +7,35 @@ const DistributorDataTable = ({ distributorData, loading, error, onEdit }) => {
   const isEmpty = !distributorData || distributorData.length === 0;
 
   return (
-    <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', mt: 2 }}>
-      <Table aria-label="modern table">
+    <TableContainer
+      component={Paper}
+      elevation={3}
+      sx={{
+        marginTop: 1,
+        maxHeight: 800,
+        overflowY: 'auto',
+      }}
+    >
+      <Table
+        stickyHeader
+        aria-label="custom category table"
+        sx={{
+          '& thead th': {
+            fontWeight: 'bold',
+            background: 'rgba(0, 0, 0, 0.1)',
+          },
+          '& tbody tr:hover': {
+            background: 'rgba(255, 255, 255, 0.08)',
+            transition: '0.3s ease',
+          },
+          '& tbody td': {
+            textShadow: '0px 0px 8px rgba(255,255,255,0.3)',
+          },
+          '& .MuiTableCell-root': {
+            padding: '8px 16px',
+          },
+        }}
+      >
         <TableHead>
           <TableRow>
             <TableCell>ID</TableCell>

@@ -12,8 +12,35 @@ const ItemTable = ({ items, onEdit, onView, sortBy, sortDirection, onSort, statu
   };
 
   return (
-    <TableContainer component={Paper} elevation={3}>
-      <Table aria-label="modern item table">
+    <TableContainer
+      component={Paper}
+      elevation={3}
+      sx={{
+        marginTop: 1,
+        maxHeight: 800,
+        overflowY: 'auto',
+      }}
+    >
+      <Table
+        stickyHeader
+        aria-label="custom category table"
+        sx={{
+          '& thead th': {
+            fontWeight: 'bold',
+            background: 'rgba(0, 0, 0, 0.1)',
+          },
+          '& tbody tr:hover': {
+            background: 'rgba(255, 255, 255, 0.08)',
+            transition: '0.3s ease',
+          },
+          '& tbody td': {
+            textShadow: '0px 0px 8px rgba(255,255,255,0.3)',
+          },
+          '& .MuiTableCell-root': {
+            padding: '8px 16px',
+          },
+        }}
+      >
         <TableHead>
           <TableRow>
             <TableCell onClick={() => onSort('name')} style={{ cursor: 'pointer' }}>

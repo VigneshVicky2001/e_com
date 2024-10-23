@@ -14,6 +14,7 @@ export default function Customer() {
   const [sortDirection, setSortDirection] = useState('asc');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [totalCustomers, setTotalCustomers] = useState(0);
 
   const filters = useMemo(() => ({
     page,
@@ -22,14 +23,11 @@ export default function Customer() {
 
   const fetchData = async () => {
     try {
-      console.log(page);
-      console.log(rowsPerPage);
-      console.log(sortBy);
-      console.log(sortDirection);
       const response = await getAllCustomers(page, rowsPerPage, sortBy, sortDirection);
       setLoading(false);
       setCustomers(response.customers);
-      setPage(response.currentPage);
+      // setPage(response.currentPage);
+      setTotalCustomers(response.totalItems);
     } catch (error) {
       console.error('Error fetching customers:', error);
     }
@@ -38,7 +36,7 @@ export default function Customer() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [filters, sortDirection, page, rowsPerPage]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -47,6 +45,15 @@ export default function Customer() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const handleSort = (column) => {
+    if (sortBy === column) {
+      setSortDirection((prevDirection) => (prevDirection === 'ASC' ? 'DESC' : 'ASC'));
+    } else {
+      setSortBy(column);
+      setSortDirection('ASC');
+    }
   };
 
   return (
@@ -76,14 +83,17 @@ export default function Customer() {
         <>
           <CustomerTable
             customers={customers}
+            sortBy={sortBy}
+            sortDirection={sortDirection}
+            onSort={handleSort}
           />
           <TablePagination
             component="div"
-            count={customers.length}  // Total items from API response
+            count={totalCustomers}
             page={page}
-            onPageChange={(event, newPage) => setPage(newPage)}
+            onPageChange={handleChangePage}
             rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={(event) => setRowsPerPage(parseInt(event.target.value, 10))}
+            onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </>
       )}

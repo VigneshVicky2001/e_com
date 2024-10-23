@@ -20,7 +20,7 @@ export default function RestockHistory() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [historyData, setHistoryData] = useState(null);
-  const [dataCount, setDataCount] = useState(null);
+  const [dataCount, setDataCount] = useState(0);
   const [DialogOpen, setDialogOpen] = useState(false);
   const [RHId, setRHId] = useState(null);
   const snackbarRef = useRef(null);
@@ -34,9 +34,8 @@ export default function RestockHistory() {
       startProgress();
       setLoading(true);
       const data = await getAllRestockHistory(sortOrder, startDate, endDate, page, rowsPerPage);
-      setHistoryData(data.restockHistories);
-      setDataCount(data.length);
-      console.log(data);
+      setHistoryData(data.restockHistories || []);
+      setDataCount(data.totalItems || 0);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -47,7 +46,7 @@ export default function RestockHistory() {
 
   useEffect(() => {
     fetchData();
-  }, [startDate, endDate, sortOrder]);
+  }, [startDate, endDate, sortOrder, page, rowsPerPage]);
 
   const handleClearFilters = () => {
     setStartDate(null);
@@ -80,6 +79,16 @@ export default function RestockHistory() {
   const showErrorSnackbar = (message) => {
     errorSnackbar(message, snackbarRef);
   };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, padding: 3 }}>
@@ -142,16 +151,13 @@ export default function RestockHistory() {
             sortOrder={sortOrder}
           />
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
+            // rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={historyData.length}
-            rowsPerPage={rowsPerPage}
+            count={dataCount}
             page={page}
-            onPageChange={(e, newPage) => setPage(newPage)}
-            onRowsPerPageChange={(e) => {
-              setRowsPerPage(parseInt(e.target.value, 10));
-              setPage(0);
-            }}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Box>
       )}

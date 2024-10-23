@@ -20,7 +20,7 @@ export default function Bill() {
   const [bills, setBills] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [totalBills, setTotalBills] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [paymentStatus, setPaymentStatus] = useState('');
   const [startDate, setStartDate] = useState(null);
@@ -64,6 +64,7 @@ export default function Bill() {
         setLoading(true);
         const data = await getBills(filters);
         setBills(data.billDetails || []);
+        setTotalBills(data.count || 0);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -93,6 +94,15 @@ export default function Bill() {
 
   const handleStatusChange = (newStatus) => {
     setPaymentStatus(newStatus);
+    setPage(0);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
     setPage(0);
   };
 
@@ -208,16 +218,13 @@ export default function Bill() {
             onStatusChange={handleStatusChange}
           />
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
+            // rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={bills.length}
-            rowsPerPage={rowsPerPage}
+            count={totalBills}
             page={page}
-            onPageChange={(e, newPage) => setPage(newPage)}
-            onRowsPerPageChange={(e) => {
-              setRowsPerPage(parseInt(e.target.value, 10));
-              setPage(0);
-            }}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Box>
       )}

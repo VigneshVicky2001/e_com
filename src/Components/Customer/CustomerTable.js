@@ -1,19 +1,28 @@
 import React, { useRef } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import useProgressBar from '../../Common/ProgressBar';
+import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
 
-const CustomerTable = ({ customers }) => {
+const CustomerTable = ({ customers, sortBy, sortDirection, onSort }) => {
   const snackbarRef = useRef();
-  const { startProgress, stopProgress } = useProgressBar();
+
+  const renderSortIcon = (column) => {
+    if (sortBy !== column) return null;
+    return sortDirection === 'ASC' ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />;
+  };
+
   return (
     <TableContainer
       component={Paper}
       elevation={3}
       sx={{
-        marginTop: 1
+        marginTop: 1,
+        maxHeight: 800,
+        overflowY: 'auto',
       }}
     >
       <Table
+        stickyHeader
         aria-label="custom category table"
         sx={{
           '& thead th': {
@@ -27,25 +36,30 @@ const CustomerTable = ({ customers }) => {
           '& tbody td': {
             textShadow: '0px 0px 8px rgba(255,255,255,0.3)',
           },
+          '& .MuiTableCell-root': {
+            padding: '12px 16px',
+          },
         }}
       >
         <TableHead>
           <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Phone Number</TableCell>
-            <TableCell>Address</TableCell>
-            <TableCell>E-mail</TableCell>
+            <TableCell align="center">ID</TableCell>
+            <TableCell align="center" onClick={() => onSort('name')} style={{ cursor: 'pointer' }}>
+              Name {renderSortIcon('name')}
+            </TableCell>
+            <TableCell align="center">Phone Number</TableCell>
+            <TableCell align="center">Address</TableCell>
+            <TableCell align="center">E-mail</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {customers.map((customer) => (
             <TableRow key={customer.customerId} hover>
-              <TableCell>{customer.customerId}</TableCell>
-              <TableCell>{customer.customerName}</TableCell>
-              <TableCell>{customer.customerPhoneNumber}</TableCell>
-              <TableCell>{customer.customerAddress}</TableCell>
-              <TableCell>{customer.customerEmail}</TableCell>
+              <TableCell align="center">{customer.customerId}</TableCell>
+              <TableCell align="center">{customer.customerName}</TableCell>
+              <TableCell align="center">{customer.customerPhoneNumber}</TableCell>
+              <TableCell align="center">{customer.customerAddress}</TableCell>
+              <TableCell align="center">{customer.customerEmail}</TableCell>
             </TableRow>
           ))}
         </TableBody>
