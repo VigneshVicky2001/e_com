@@ -6,28 +6,36 @@ import useProgressBar from '../../Common/ProgressBar';
 import RestockHistoryTable from './RestockHistoryTable';
 import RHDialogBox from './RHDialogBox';
 import CustomSnackbar, { successSnackbar, errorSnackbar } from '../../Common/Snackbar';
+import { DesktopDatePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 export default function RestockHistory() {
   const { startProgress, stopProgress } = useProgressBar();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [sortOrder, setSortOrder] = useState();
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [historyData, setHistoryData] = useState(null);
+  const [dataCount, setDataCount] = useState(null);
   const [DialogOpen, setDialogOpen] = useState(false);
   const [RHId, setRHId] = useState(null);
   const snackbarRef = useRef(null);
 
-  const filters = useMemo(() => ({
-
-  }));
+  const handleSortToggle = () => {
+    setSortOrder(prev => prev === 'ASC' ? 'DESC' : 'ASC');
+  };
 
   const fetchData = async () => {
     try{
       startProgress();
       setLoading(true);
-      const data = await getAllRestockHistory();
-      setHistoryData(data);
+      const data = await getAllRestockHistory(sortOrder, startDate, endDate, page, rowsPerPage);
+      setHistoryData(data.restockHistories);
+      setDataCount(data.length);
       console.log(data);
     } catch (error) {
       setError(error.message);
@@ -39,11 +47,12 @@ export default function RestockHistory() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [startDate, endDate, sortOrder]);
 
   const handleClearFilters = () => {
-    
-    setPage(0);
+    setStartDate(null);
+    setEndDate(null);
+    fetchData();
   };
 
   const handleOpenDialog = () => {
@@ -93,6 +102,30 @@ export default function RestockHistory() {
           Add History
         </Button>
       </Box>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <DesktopDatePicker
+            label="Start Date"
+            value={startDate}
+            onChange={(newValue) => setStartDate(newValue)}
+            renderInput={(params) => <TextField {...params} />}
+          />
+          <DesktopDatePicker
+            label="End Date"
+            value={endDate}
+            onChange={(newValue) => setEndDate(newValue)}
+            renderInput={(params) => <TextField {...params} />}
+          />
+            <Button 
+              variant="outlined" 
+              color="secondary" 
+              onClick={handleClearFilters}
+              sx={{ height: 'fit-content' }}
+            >
+              Clear Filters
+            </Button>
+        </Box>
+      </LocalizationProvider>
 
       {loading ? (
         <Typography>Loading...</Typography>
@@ -102,7 +135,11 @@ export default function RestockHistory() {
         <Box>
           <RestockHistoryTable
             historyData={historyData}
+            loading={loading}
+            error={error}
             onEdit={handleEdit}
+            onSortToggle={handleSortToggle}
+            sortOrder={sortOrder}
           />
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}

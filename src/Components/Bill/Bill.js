@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Box, Typography, Select, MenuItem, FormControlLabel, Switch, TextField, Button, IconButton, Paper } from '@mui/material';
+import { Box, Typography, FormControlLabel, Switch, Button, IconButton, Paper } from '@mui/material';
 import TablePagination from '@mui/material/TablePagination';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -7,6 +7,10 @@ import BillTable from './BillTable';
 import { getBills } from '../../Service/Bill.api';
 import useProgressBar from '../../Common/ProgressBar';
 import { useNavigate } from 'react-router-dom';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import TextField from '@mui/material/TextField';
 
 export default function Bill() {
   const navigate = useNavigate();
@@ -24,19 +28,34 @@ export default function Bill() {
   const [returned, setReturned] = useState(false);
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState('ASC');
-  const [DialogOpen, setDialogOpen] = useState(false);
 
-  const filters = useMemo(() => ({
-    page,
-    size: rowsPerPage,
-    paymentMethod,
-    paymentStatus,
-    startDate,
-    endDate,
-    returned,
-    sortBy,
-    sortDirection,
-  }), [page, rowsPerPage, paymentMethod, paymentStatus, startDate, endDate, returned, sortBy, sortDirection]);
+  // Function to convert IST date to UTC (with Z suffix)
+  const formatToUTC = (date) => {
+    if (!date) return null;
+    
+    // Create a new Date object in IST
+    const dateInIST = new Date(date);
+    
+    // Adjust to UTC by subtracting IST offset (5 hours 30 minutes)
+    const utcDate = new Date(dateInIST.getTime() - (5.5 * 60 * 60 * 1000));
+    
+    // Return the UTC date in ISO string format with 'Z'
+    return utcDate.toISOString();
+  };
+
+  const filters = useMemo(() => {
+    return {
+      page,
+      size: rowsPerPage,
+      paymentMethod,
+      paymentStatus,
+      startDate: formatToUTC(startDate),
+      endDate: formatToUTC(endDate),
+      returned,
+      sortBy,
+      sortDirection,
+    };
+  }, [page, rowsPerPage, paymentMethod, paymentStatus, startDate, endDate, returned, sortBy, sortDirection]);
 
   useEffect(() => {
     const fetchBills = async () => {
@@ -110,26 +129,24 @@ export default function Bill() {
       <Paper elevation={3} sx={{ padding: 2, borderRadius: '8px' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
-            <TextField
-              label="Start Date"
-              type="date"
-              value={startDate ? startDate.substring(0, 10) : ''}
-              onChange={(e) => setStartDate(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              variant="outlined"
-              size="small"
-              sx={{ borderRadius: '8px' }}
-            />
-            <TextField
-              label="End Date"
-              type="date"
-              value={endDate ? endDate.substring(0, 10) : ''}
-              onChange={(e) => setEndDate(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              variant="outlined"
-              size="small"
-              sx={{ borderRadius: '8px' }}
-            />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DateTimePicker
+                label="Start Date"
+                value={startDate}
+                onChange={(date) => setStartDate(date)}
+                renderInput={(params) => <TextField {...params} size="small" variant="outlined" sx={{ borderRadius: '8px' }} />}
+              />
+            </LocalizationProvider>
+
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DateTimePicker
+                label="End Date"
+                value={endDate}
+                onChange={(date) => setEndDate(date)}
+                renderInput={(params) => <TextField {...params} size="small" variant="outlined" sx={{ borderRadius: '8px' }} />}
+              />
+            </LocalizationProvider>
+
             <FormControlLabel
               control={<Switch checked={returned} onChange={(e) => setReturned(e.target.checked)} />}
               label="Returned"
@@ -144,9 +161,9 @@ export default function Bill() {
                 padding: '8px 16px',
                 borderRadius: '8px',
                 '&:hover': {
-                backgroundColor: 'secondary.main',
-                color: 'white',
-              },
+                  backgroundColor: 'secondary.main',
+                  color: 'white',
+                },
               }}
             >
               Clear Filters
@@ -204,8 +221,6 @@ export default function Bill() {
           />
         </Box>
       )}
-
-      {/* <BillDialogBox open={DialogOpen} handleClose={() => setDialogOpen(false)} /> */}
     </Box>
   );
 }

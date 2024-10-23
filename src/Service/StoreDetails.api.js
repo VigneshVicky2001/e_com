@@ -13,6 +13,19 @@ export const saveStoreDetails = (payload) => {
     });
 };
 
+export const updateStoreDetails = (payload) => {
+    return baseApi.put('/storeDetails/updateStoreDetails', payload, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    })
+    .then(response => response.data)
+    .catch(error => {
+        console.error(error);
+        throw error;
+    });
+};
+
 export const getLogo = (id) => {
     return baseApi.get(`storeDetails/getLogo/${id}`)
         .then(response => response.data)
@@ -22,3 +35,11 @@ export const getLogo = (id) => {
         });
 };
 
+export const getStoreDetailsById = (id) => {
+    return baseApi.get(`storeDetails/getStoreDetailsById/${id}`)
+        .then(response => response.data)
+        .catch(error => {
+            console.error(error);
+            throw error;
+        });
+};

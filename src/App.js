@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './Common/Header';
 import Footer from './Common/Footer';
@@ -16,10 +16,28 @@ import AddBill from './Components/Bill/AddBill';
 import Settings from './Components/Settings';
 import './App.css';
 import { createTheme, ThemeProvider } from '@mui/material';
+import { getLogo } from './Service/StoreDetails.api';
 
 const theme = createTheme();
 
 function App() {
+  const [logoUrl, setLogoUrl] = useState(null);
+
+  const fetchLogo = async () => {
+    try {
+      const response = await getLogo(1);
+      const logoData = response.logo;
+      const logoSrc = `data:image/png;base64,${logoData}`;
+      setLogoUrl(logoSrc);
+    } catch (error) {
+      console.error('Failed to load logo:', error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchLogo();
+  }, []);
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
@@ -32,7 +50,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '98vh' }}>
-        <Header toggleSidebar={toggleSidebar} showLogout={!isLoginPage} />
+        <Header toggleSidebar={toggleSidebar} showLogout={!isLoginPage} logoUrl={logoUrl} />
         <div style={{ flex: 1, display: 'flex' }}>
           {!isLoginPage && <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} isMinimized={sidebarOpen} />}
           <div style={{ flexGrow: 1, marginTop: '70px' }}>
@@ -47,7 +65,7 @@ function App() {
               <Route path="/sales-report" element={<SalesReport />} />
               <Route path="/customer" element={<Customer />} />
               <Route path="/bill/add-bill" element={<AddBill />} />
-              <Route path="/settings" element={<Settings />} />
+              <Route path="/settings" element={<Settings onLogoUpdate={fetchLogo} />} />
             </Routes>
           </div>
         </div>

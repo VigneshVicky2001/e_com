@@ -1,14 +1,10 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Tooltip, Chip } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Tooltip, Chip, TableSortLabel } from '@mui/material';
 import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-const RestockHistoryTable = ({ historyData, loading, error, onEdit }) => {
-//   const renderSortIcon = (column) => {
-//     if (sortBy !== column) return null;
-//     return sortDirection === 'ASC' ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />;
-//   };
+const RestockHistoryTable = ({ historyData, loading, error, onEdit, onSortToggle, sortOrder }) => {
 
   const isEmpty = !historyData || historyData.length === 0;
 
@@ -22,6 +18,14 @@ const RestockHistoryTable = ({ historyData, loading, error, onEdit }) => {
             <TableCell>Quantity</TableCell>    
             <TableCell>Distributor Name</TableCell>
             <TableCell>Buying Price</TableCell>
+            <TableCell>
+              Adjustment Date
+              <Tooltip title={`Sort by date (${sortOrder === 'ASC' ? 'ASC' : 'DESC'})`}>
+                <IconButton onClick={onSortToggle}>
+                  {sortOrder === 'ASC' ? <ArrowUpward /> : <ArrowDownward />}
+                </IconButton>
+              </Tooltip>
+            </TableCell>
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -47,7 +51,7 @@ const RestockHistoryTable = ({ historyData, loading, error, onEdit }) => {
           ) : (
             historyData.map((data) => (
               <TableRow
-                key={data.Id}
+                key={data.reStockHistoryId}
                 hover
                 sx={{
                   backgroundColor: data.Id % 2 === 0 ? 'grey.100' : 'white',
@@ -56,14 +60,15 @@ const RestockHistoryTable = ({ historyData, loading, error, onEdit }) => {
                   },
                 }}
               >
-                <TableCell component="th" scope="row">{data.distibutorId}</TableCell>
+                <TableCell component="th" scope="row">{data.reStockHistoryId}</TableCell>
                 <TableCell>{data.adjustmentType}</TableCell>
                 <TableCell>{data.adjustmentQuantity}</TableCell>
-                <TableCell>{data.distibutorName}</TableCell>
+                <TableCell>{data.distributorName}</TableCell>
                 <TableCell>{data.buyingPrice}</TableCell>
+                <TableCell>{new Date(data.adjustmentDate).toLocaleDateString()}</TableCell>
                 <TableCell>
                   <Tooltip title="Edit">
-                    <IconButton onClick={() => onEdit(data.distibutorId)} size="small" color="primary">
+                    <IconButton onClick={() => onEdit(data.reStockHistoryId)} size="small" color="primary">
                       <EditIcon />
                     </IconButton>
                   </Tooltip>

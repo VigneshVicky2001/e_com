@@ -27,7 +27,7 @@ const Sidebar = ({ open, isMinimized }) => {
     { label: 'Bill', path: '/bill', icon: <ReceiptIcon /> },
     { label: 'Restock History', path: '/restock-history', icon: <HistoryIcon /> },
     { label: 'Distributor Data', path: '/distributor-data', icon: <BusinessIcon /> },
-    { label: 'Sales Report', path: '/sales-report', icon: <ReportIcon /> },
+    // { label: 'Sales Report', path: '/sales-report', icon: <ReportIcon /> },
     { label: 'Customer', path: '/customer', icon: <PeopleAltIcon /> },
     { label: 'Settings', path: '/settings', icon: <SettingsIcon /> },
   ];

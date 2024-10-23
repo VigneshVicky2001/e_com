@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Box, Button, Card, CardContent, TextField, Typography, Avatar } from '@mui/material';
 import { styled } from '@mui/system';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import { saveStoreDetails } from '../Service/StoreDetails.api';
+import { saveStoreDetails, getStoreDetailsById, updateStoreDetails } from '../Service/StoreDetails.api';
 import CustomSnackbar, {successSnackbar, errorSnackbar} from '../Common/Snackbar';
 
 const StyledCard = styled(Card)({
@@ -62,13 +62,45 @@ const StyledButton = styled(Button)({
   boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.5)',
 });
 
-const Settings = () => {
+const Settings = ({ onLogoUpdate }) => {
   const snackbarRef = useRef();
   const [orgName, setOrgName] = useState('');
   const [orgNo, setOrgNo] = useState('');
   const [orgAddress, setOrgAddress] = useState('');
   const [logo, setLogo] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
+  const [id, setId] = useState(1);
+  const [phoneError, setPhoneError] = useState('');
+
+  useEffect(() => {
+    const fetchStoreDetails = async () => {
+      try {
+        const response = await getStoreDetailsById(id);
+        setOrgName(response.storeName);
+        setOrgNo(response.storePhoneNumber);
+        setOrgAddress(response.storeAddress);
+        
+        const byteString = atob(response.storeLogo);
+        const arrayBuffer = new ArrayBuffer(byteString.length);
+        const uint8Array = new Uint8Array(arrayBuffer);
+        
+        for (let i = 0; i < byteString.length; i++) {
+          uint8Array[i] = byteString.charCodeAt(i);
+        }
+  
+        const blob = new Blob([uint8Array], { type: 'image/png' });
+        const file = new File([blob], "store-logo.png", { type: 'image/png' });
+  
+        setLogo(file);
+        setLogoPreview(`data:image/png;base64,${response.storeLogo}`);
+      } catch (error) {
+        console.error("Error fetching store details", error);
+        errorSnackbar("Error loading store details");
+      }
+    };
+  
+    fetchStoreDetails();
+  }, [id]);
 
   const handleLogoChange = (event) => {
     const file = event.target.files[0];
@@ -78,29 +110,58 @@ const Settings = () => {
     }
   };
 
+  const validatePhoneNumber = (phoneNumber) => {
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    if (!phoneNumber.match(phoneRegex)) {
+      setPhoneError("Please enter a valid phone number with the country code.");
+      return false;
+    }
+    setPhoneError('');
+    return true;
+  };
+
   const handleSaveChanges = async () => {
-    const data = new FormData();
-    data.append('name', orgName);
-    data.append('phoneNumber', orgNo);
-    data.append('address', orgAddress);
-    data.append('logo', logo);
-  
-    try {
-      const response = await saveStoreDetails(data);
-      console.log(response);
-      successSnackbar("Store details saved!");
-    } catch (error) {
-      successSnackbar("Error saving store details");
-      console.log(error);
-      throw error;
+    if(!validatePhoneNumber(orgNo)){
+      return;
+    }
+    if(id){
+      const data = new FormData();
+      data.append('id', id)
+      data.append('name', orgName);
+      data.append('phoneNumber', orgNo);
+      data.append('address', orgAddress);
+      data.append('logo', logo);
+    
+      try {
+        const response = await updateStoreDetails(data);
+        onLogoUpdate();
+        successSnackbar("Store updated saved!", snackbarRef);
+      } catch (error) {
+        errorSnackbar("Error updating store details", snackbarRef);
+        console.log(error);
+      }
+    } else {
+      const data = new FormData();
+      data.append('name', orgName);
+      data.append('phoneNumber', orgNo);
+      data.append('address', orgAddress);
+      data.append('logo', logo);
+    
+      try {
+        const response = await saveStoreDetails(id, data);
+        console.log(response);
+        successSnackbar("Store details saved!", snackbarRef);
+      } catch (error) {
+        errorSnackbar("Error saving store details", snackbarRef);
+        console.log(error);
+      }
     }
   };
-  
 
   return (
     <StyledCard>
       <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: '16px' }}>
-        Settings
+        {id ? "Edit Store Details" : "Add Store Details"}
       </Typography>
 
       <CardContent>
@@ -122,6 +183,7 @@ const Settings = () => {
         <StyledTextField
           label="Organization Name*"
           variant="outlined"
+          disabled
           fullWidth
           value={orgName}
           onChange={(e) => setOrgName(e.target.value)}
@@ -132,6 +194,8 @@ const Settings = () => {
           variant="outlined"
           fullWidth
           value={orgNo}
+          error={!!phoneError}
+          helperText={phoneError}
           onChange={(e) => setOrgNo(e.target.value)}
         />
         
@@ -148,7 +212,7 @@ const Settings = () => {
           color="primary"
           onClick={handleSaveChanges}
         >
-          Save
+        {id ? "Update" : "Save"}
         </StyledButton>
       </CardContent>
       <CustomSnackbar ref={snackbarRef}/>

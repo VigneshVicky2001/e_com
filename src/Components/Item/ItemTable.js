@@ -19,6 +19,7 @@ const ItemTable = ({ items, onEdit, onView, sortBy, sortDirection, onSort, statu
             <TableCell onClick={() => onSort('name')} style={{ cursor: 'pointer' }}>
               Name {renderSortIcon('name')}
             </TableCell>
+            <TableCell align="center">Category</TableCell>
             <TableCell align="center" onClick={() => onSort('stockQuantity')} style={{ cursor: 'pointer' }}>
               Stock Qty {renderSortIcon('stockQuantity')}
             </TableCell>
@@ -47,6 +48,7 @@ const ItemTable = ({ items, onEdit, onView, sortBy, sortDirection, onSort, statu
           {items.map((item) => (
             <TableRow key={item.id} hover>
               <TableCell component="th" scope="row">{item.name}</TableCell>
+              <TableCell align="center">{item.category}</TableCell>
               <TableCell align="center">{item.stockQuantity}</TableCell>
               <TableCell align="center">{item.sellingPrice}</TableCell>
               <TableCell align="center">{item.mrpPrice}</TableCell>

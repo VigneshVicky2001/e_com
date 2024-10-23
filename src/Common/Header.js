@@ -1,39 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Box } from '@mui/material';
 import { styled } from '@mui/system';
-import BarcodeIcon from '@mui/icons-material/QrCode';
 import LogoutSharpIcon from '@mui/icons-material/LogoutSharp';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
-import { getLogo } from '../Service/StoreDetails.api'; // Assuming getLogo is from an API
 
 const GlassAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: '#333',
   height: '70px',
 }));
 
-const Header = ({ toggleSidebar, showLogout }) => {
+const Header = ({ toggleSidebar, showLogout, logoUrl }) => {
   const navigate = useNavigate();
-  const [logoUrl, setLogoUrl] = useState(null);
 
   const handleLogout = () => {
     navigate('/');
   };
-
-  useEffect(() => {
-    const fetchLogo = async () => {
-      try {
-        const response = await getLogo(1);
-        const logoData = response.logo;
-        const logoSrc = `data:image/png;base64,${logoData}`;
-        setLogoUrl(logoSrc);
-      } catch (error) {
-        console.error('Failed to load logo:', error);
-      }
-    };
-
-    fetchLogo();
-  }, []);
 
   return (
     <GlassAppBar position="fixed" className="header">
