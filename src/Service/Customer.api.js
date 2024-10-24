@@ -15,3 +15,16 @@ export const getAllCustomers = (pageNumber, size, sortBy, sortDirection) => {
         throw error;
     });
 };
+
+export const getCustomerByPhoneNumber = (phoneNumber) => {
+    return baseApi.get('/customer/getCustomerByPhoneNumber', {
+        params: {
+            phoneNumber: phoneNumber
+        }
+    })
+    .then(response => response.data)
+    .catch(error => {
+        console.error(error)
+        throw error;
+    });
+};

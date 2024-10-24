@@ -5,6 +5,7 @@ import { getAllItems } from '../../Service/Item.api';
 import { addBill } from '../../Service/Bill.api';
 import { useNavigate } from 'react-router-dom';
 import CustomSnackbar, { successSnackbar, errorSnackbar } from '../../Common/Snackbar';
+import { getCustomerByPhoneNumber } from '../../Service/Customer.api';
 
 const AddBill = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const AddBill = () => {
   const [customerAddress, setCustomerAddress] = useState(''); 
   const [phoneError, setPhoneError] = useState('');
   const [phoneTouched, setPhoneTouched] = useState(false);
+  const [debounceTimeout, setDebounceTimeout] = useState(null);
 
   useEffect(() => {
     fetchItems();
@@ -96,16 +98,56 @@ const AddBill = () => {
   const handlePhoneNumberChange = (e) => {
     const value = e.target.value;
     setCustomerPhoneNumber(value);
+  
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+  
+    setDebounceTimeout(
+      setTimeout(() => {
+        if (value.length === 10 && /^\d+$/.test(value)) {
+          setPhoneError('');
+          handlePhoneBlur();
+        }
+      }, 500)
+    );
   };
+
 
   const handlePhoneBlur = () => {
     setPhoneTouched(true);
     if (customerPhoneNumber.length !== 10 || !/^\d+$/.test(customerPhoneNumber)) {
       setPhoneError("Phone number must be exactly 10 digits.");
-    } else {
-      setPhoneError('');
     }
   };
+
+    useEffect(() => {
+      if (customerPhoneNumber.length === 10 && /^\d+$/.test(customerPhoneNumber)) {
+        setPhoneError('');
+        const timer = setTimeout(async () => {
+          try {
+            const customer = await getCustomerByPhoneNumber(customerPhoneNumber);
+            if (customer) {
+              setCustomerName(customer.customerName);
+              setCustomerEmail(customer.customerEmail || '');
+              setCustomerAddress(customer.customerAddress || '');
+              setPhoneError('');
+              successSnackbar('Customer data loaded', snackbarRef);
+            } else {
+              errorSnackbar('No customer found with this phone number', snackbarRef);
+            }
+          } catch (error) {
+            console.error('Error fetching customer by phone number:', error);
+            errorSnackbar('Error fetching customer information', snackbarRef);
+          }
+        }, 500);
+  
+        return () => clearTimeout(timer);
+      } else if (customerPhoneNumber.length > 0) {
+        setPhoneError('Phone number must be exactly 10 digits.');
+      }
+    }, [customerPhoneNumber]);
+  
 
   const handleProceedToPayment = async () => {
 
@@ -156,6 +198,7 @@ const AddBill = () => {
 
     try {
       await addBill(payload);
+      successSnackbar('Payment went through', snackbarRef);
       navigate('/bill');
     } catch (error) {
       console.error('Error adding bill:', error);
