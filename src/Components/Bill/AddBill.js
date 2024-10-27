@@ -22,6 +22,8 @@ const AddBill = () => {
   const [phoneTouched, setPhoneTouched] = useState(false);
   const [debounceTimeout, setDebounceTimeout] = useState(null);
 
+  const decimalUnits = ['kg', 'L', 'm', 'ft', 'sq ft', 'sq m', 'cu ft', 'gal', 'lb', 'oz'];
+
   useEffect(() => {
     fetchItems();
   }, []);
@@ -72,10 +74,29 @@ const AddBill = () => {
 
   const handleQuantityChange = (index, delta) => {
     const newCart = [...cart];
-    const updatedQuantity = newCart[index].quantity + delta;
+    const itemUnit = newCart[index].item?.unit;
+  
+    const isDecimalAllowed = decimalUnits.includes(itemUnit);
+  
+    const updatedQuantity = isDecimalAllowed
+      ? parseFloat((newCart[index].quantity + delta).toFixed(2))
+      : newCart[index].quantity + delta;
+  
     if (updatedQuantity > 0) {
       newCart[index].quantity = updatedQuantity;
       newCart[index].total = newCart[index].rate * updatedQuantity;
+      setCart(newCart);
+    }
+  };
+
+  const handleQuantityInputChange = (index, value) => {
+    const newCart = [...cart];
+    const itemUnit = newCart[index].item?.unit;
+    const isDecimalAllowed = decimalUnits.includes(itemUnit);
+  
+    if (isDecimalAllowed ? /^[0-9]*[.]?[0-9]*$/.test(value) : /^[0-9]*$/.test(value)) {
+      newCart[index].quantity = value;
+      newCart[index].total = newCart[index].rate * (parseFloat(value) || 0);
       setCart(newCart);
     }
   };
@@ -132,9 +153,7 @@ const AddBill = () => {
               setCustomerEmail(customer.customerEmail || '');
               setCustomerAddress(customer.customerAddress || '');
               setPhoneError('');
-              successSnackbar('Customer data loaded', snackbarRef);
-            } else {
-              errorSnackbar('No customer found with this phone number', snackbarRef);
+              successSnackbar('Customer exists', snackbarRef);
             }
           } catch (error) {
             console.error('Error fetching customer by phone number:', error);
@@ -259,13 +278,40 @@ const AddBill = () => {
                 </TableCell>
                 <TableCell>{cartItem.stockQuantity}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleQuantityChange(index, -1)}>
-                    <RemoveCircleOutline />
-                  </IconButton>
-                  {cartItem.quantity}
-                  <IconButton onClick={() => handleQuantityChange(index, 1)}>
-                    <AddCircleOutline />
-                  </IconButton>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      // alignItems: 'center',
+                      // justifyContent: 'center',
+                      gap: 1,
+                    }}
+                  >
+                    <IconButton onClick={() => handleQuantityChange(index, -0.1)} size="small">
+                      <RemoveCircleOutline fontSize="small" />
+                    </IconButton>
+
+                    <TextField
+                      value={cart[index].quantity || ""}
+                      onChange={(e) => handleQuantityInputChange(index, e.target.value)}
+                      type="text"
+                      inputProps={{
+                        inputMode: "decimal",
+                        min: "0",
+                        step: decimalUnits.includes(cart[index].item?.unit) ? "0.1" : "1",
+                        style: { textAlign: 'center' },
+                      }}
+                      sx={{
+                        width: "80px",
+                        '& input': {
+                          padding: '4px 0',
+                        },
+                      }}
+                    />
+
+                    <IconButton onClick={() => handleQuantityChange(index, 0.1)} size="small">
+                      <AddCircleOutline fontSize="small" />
+                    </IconButton>
+                  </Box>
                 </TableCell>
                 <TableCell>₹{cartItem.rate}</TableCell>
                 <TableCell>₹{cartItem.total}</TableCell>

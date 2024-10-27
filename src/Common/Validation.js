@@ -8,11 +8,15 @@ export const CategoryValidation = yup.object().shape({
 
 export const ItemValidation = yup.object().shape({
   name: yup.string().required("Name is required"),
+  barcode: yup.string()
+    .required('Barcode is required')
+    .matches(/^\d{13}$/, 'Barcode must be exactly 13 digits long'),
   mrpPrice: yup.string().required("MRP Price is required"),
   sellingPrice: yup.string().required("Selling Price is required"),
   stockQuantity: yup.string().required("Stock quantity is required"),
   status: yup.string().required("Status is required"),
   categoryId: yup.string().required("Category is required"),
+  unitId: yup.string().required("Unit is required"),
 });
 
 export const StockHistoryValidation = yup.object().shape({

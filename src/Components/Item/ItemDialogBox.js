@@ -5,6 +5,7 @@ import { addItem, updateItem, getItemById } from '../../Service/Item.api';
 import { getCategoriesDropdown } from '../../Service/Category.api';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ItemValidation } from '../../Common/Validation';
+import { getAllUnits } from '../../Service/Unit.api';
 
 function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar, showErrorSnackbar }) {
   const { 
@@ -16,6 +17,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
     formState: { errors },
   } = useForm({ resolver: yupResolver(ItemValidation) });
   const [categories, setCategories] = useState([]);
+  const [units, setUnits] = useState([]);
 
   useEffect(() => {
     if (open) {
@@ -32,6 +34,7 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
         });
       }
       categoryDropdown();
+      UnitDropdown();
     }
   }, [itemId, open]);
 
@@ -39,10 +42,12 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
     const data = await getItemById(itemId);
     setValue('name', data?.name);
     setValue('mrpPrice', data?.mrpPrice);
+    setValue('barcode', data?.barcode);
     setValue('sellingPrice', data?.sellingPrice);
     setValue('stockQuantity', data?.stockQuantity);
     setValue('status', data?.status);
     setValue('categoryId', data?.categoryId);
+    setValue('unitId', data?.unitId);
   };
 
   const categoryDropdown = async () => {
@@ -59,24 +64,42 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
       });
   };
 
+  const UnitDropdown = async () => {
+    getAllUnits()
+      .then(response => {
+        if (response && Array.isArray(response)) {
+          setUnits(response);
+        } else {
+          console.error('No data found in API response.');
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching units:', error);
+      });
+  };
+
   const handleFormSubmit = data => {
     const updatePayload = {
       id: itemId,
       name: data?.name,
+      barcode: data?.barcode,
       mrpPrice: parseFloat(data?.mrpPrice),
       sellingPrice: parseFloat(data?.sellingPrice),
       stockQuantity: data?.stockQuantity,
       status: data?.status,
       categoryId: data?.categoryId,
+      unitId: data?.unitId,
     };
 
     const createPayload = {
       name: data?.name,
+      barcode: data?.barcode,
       mrpPrice: parseFloat(data?.mrpPrice),
       sellingPrice: parseFloat(data?.sellingPrice),
       stockQuantity: data?.stockQuantity,
       status: data?.status,
       categoryId: data?.categoryId,
+      unitId: data?.unitId,
     };
 
     if (itemId) {
@@ -160,6 +183,32 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
                     }}
                     helperText={errors.name?.message}
                     error={!!errors.name}
+                  />
+                )}
+              />
+            </Grid2>
+
+            <Grid2 xs={6}>
+              <Typography variant="body1" sx={{ color: '#ccc' }}>Barcode*</Typography>
+              <Controller
+                name="barcode"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    type="text"
+                    {...register('barcode')}
+                    placeholder="Enter barcode string"
+                    {...field}
+                    size="small"
+                    fullWidth
+                    sx={{
+                      input: { color: '#fff' },
+                      backgroundColor: '#333',
+                      borderRadius: '4px',
+                    }}
+                    helperText={errors.barcode?.message}
+                    error={!!errors.barcode}
                   />
                 )}
               />
@@ -278,7 +327,6 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
                 fullWidth 
                 size="small"
                 error={!!errors.categoryId}
-                sx={{ marginBottom: 2 }}
               >
                 <Controller
                   name="categoryId"
@@ -312,6 +360,52 @@ function ItemDrawer({ open, handleClose, itemId, onRefresh, showSuccessSnackbar,
                       {errors.categoryId && (
                         <FormHelperText error sx={{ color: '#f44336' }}>
                           {errors.categoryId?.message}
+                        </FormHelperText>
+                      )}
+                    </>
+                  )}
+                />
+              </FormControl>
+            </Grid2>
+            <Grid2 xs={12}>
+              <Typography variant="body1" sx={{ color: '#ccc' }}>Units*</Typography>
+              <FormControl 
+                fullWidth 
+                size="small"
+                error={!!errors.unitId}
+              >
+                <Controller
+                  name="unitId"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <>
+                      <Select
+                        {...field}
+                        label="Select Unit"
+                        displayEmpty
+                        sx={{
+                          input: { color: '#fff' },
+                          backgroundColor: '#333',
+                          borderRadius: '4px',
+                        }}
+                      >
+                        <MenuItem value="" disabled>
+                          Select an unit
+                        </MenuItem>
+                        {units && units.length > 0 ? (
+                          units.map(unit => (
+                            <MenuItem key={unit.unitId} value={unit.unitId}>
+                              {unit.unitName}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem disabled>No Categories Available</MenuItem>
+                        )}
+                      </Select>
+                      {errors.unitId && (
+                        <FormHelperText error sx={{ color: '#f44336' }}>
+                          {errors.unitId?.message}
                         </FormHelperText>
                       )}
                     </>
