@@ -64,23 +64,22 @@ const AddBill = () => {
         total: item.sellingPrice,
       };
     }
-
     if (newCart.length === 0 || newCart[newCart.length - 1].item !== null) {
       newCart.push({ item: null, quantity: 1, rate: 0, tax: 0, total: 0 });
     }
-
     setCart(newCart);
   };
 
   const handleQuantityChange = (index, delta) => {
     const newCart = [...cart];
     const itemUnit = newCart[index].item?.unit;
-  
     const isDecimalAllowed = decimalUnits.includes(itemUnit);
   
+    const stepValue = isDecimalAllowed ? 0.1 : 1;
+  
     const updatedQuantity = isDecimalAllowed
-      ? parseFloat((newCart[index].quantity + delta).toFixed(2))
-      : newCart[index].quantity + delta;
+      ? parseFloat((newCart[index].quantity + delta * stepValue).toFixed(2))
+      : newCart[index].quantity + delta * stepValue;
   
     if (updatedQuantity > 0) {
       newCart[index].quantity = updatedQuantity;
@@ -286,7 +285,7 @@ const AddBill = () => {
                       gap: 1,
                     }}
                   >
-                    <IconButton onClick={() => handleQuantityChange(index, -0.1)} size="small">
+                    <IconButton onClick={() => handleQuantityChange(index, -1)} size="small">
                       <RemoveCircleOutline fontSize="small" />
                     </IconButton>
 
@@ -297,7 +296,7 @@ const AddBill = () => {
                       inputProps={{
                         inputMode: "decimal",
                         min: "0",
-                        step: decimalUnits.includes(cart[index].item?.unit) ? "0.1" : "1",
+                        // step: decimalUnits.includes(cart[index].item?.unit) ? "0.1" : "1",
                         style: { textAlign: 'center' },
                       }}
                       sx={{
@@ -308,7 +307,7 @@ const AddBill = () => {
                       }}
                     />
 
-                    <IconButton onClick={() => handleQuantityChange(index, 0.1)} size="small">
+                    <IconButton onClick={() => handleQuantityChange(index, 1)} size="small">
                       <AddCircleOutline fontSize="small" />
                     </IconButton>
                   </Box>
