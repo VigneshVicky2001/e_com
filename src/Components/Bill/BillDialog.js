@@ -9,9 +9,9 @@ const BillDialog = ({ open, onClose, bill }) => {
     const doc = new jsPDF();
   
     doc.setFontSize(16);
-    doc.text('SHOP NAME GOES HERE*', 105, 10, { align: 'center' });
+    doc.text('ABC shop', 105, 10, { align: 'center' });
     doc.setFontSize(12);
-    doc.text('door #1234, dubai main road, dubai kurukku sandhu, Dubai - 101010', 105, 20, { align: 'center' });
+    doc.text('address goes here', 105, 20, { align: 'center' });
     doc.text('PH: 2468097513', 105, 26, { align: 'center' });
     doc.text('GSTIN: 123AB456BC789CD', 105, 32, { align: 'center' });
   
@@ -53,10 +53,10 @@ const BillDialog = ({ open, onClose, bill }) => {
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogContent ref={printRef}>
         <Typography variant="h6" align="center" sx={{ fontWeight: 'bold' }}>
-          SHOP NAME GOES HERE*
+          ABC shop
         </Typography>
         <Typography variant="body2" align="center">
-          door #1234, dubai main road, dubai kurukku sandhu, Dubai - 101010
+          placeholder address value
         </Typography>
         <Typography variant="body2" align="center">
           PH: 2468097513

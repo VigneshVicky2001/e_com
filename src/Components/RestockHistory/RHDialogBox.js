@@ -26,8 +26,8 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
           fetchData();
         } else {
           reset({
-            adjustment_quantity: '',
-            adjustment_type: '',
+            adjustmentQuantity: '',
+            adjustmentType: '',
             adjustment_date: '',
             distibutorId: '',
             buyingPrice: '',
@@ -58,8 +58,8 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
     const fetchData = async () => {
       const data = await getRestockHistoryById(RHId);
       console.log(data);
-      setValue("adjustmentQuantity", data?.adjustment_quantity || "");
-      setValue("adjustmentType", data?.adjustment_type || "");
+      setValue("adjustmentQuantity", data?.adjustmentQuantity || "");
+      setValue("adjustmentType", data?.adjustmentType || "");
       // setValue("adjustment_date", data?.adjustment_date || "");
       setValue("distibutorId", data?.distibutorId || "");
       setValue("buyingPrice", data?.buyingPrice || "");
@@ -69,8 +69,8 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
     const handleFormSubmit = (data) => {
         const updatePayload = {
           id: RHId,
-          adjustment_quantity: Number(data?.adjustment_quantity),
-          adjustment_type: data?.adjustment_type,
+          adjustmentQuantity: Number(data?.adjustmentQuantity),
+          adjustmentType: data?.adjustmentType,
           // adjustment_date: new Date(data?.adjustment_date).toISOString(),
           distibutorId: Number(data?.distibutorId),
           buyingPrice: Number(data?.buyingPrice),
@@ -78,8 +78,8 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
         };
     
         const createPayload = {
-            adjustment_quantity: Number(data?.adjustment_quantity),
-            adjustment_type: data?.adjustment_type,
+            adjustmentQuantity: Number(data?.adjustmentQuantity),
+            adjustmentType: data?.adjustmentType,
             // adjustment_date: new Date(data?.adjustment_date).toISOString(),
             distibutorId: Number(data?.distibutorId),
             buyingPrice: Number(data?.buyingPrice),
@@ -152,13 +152,13 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                         Adjustment Qty*
                       </Typography>
                       <Controller
-                        name="adjustment_quantity"
+                        name="adjustmentQuantity"
                         control={control}
                         defaultValue=""
                         render={({ field }) => (
                           <TextField
                             type="number"
-                            {...register("adjustment_quantity")}
+                            {...register("adjustmentQuantity")}
                             placeholder="Enter Quantity"
                             {...field}
                             size="small"
@@ -169,8 +169,8 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                               backgroundColor: '#333',
                               borderRadius: '4px',
                             }}
-                            helperText={errors.adjustment_quantity?.message}
-                            error={!!errors.adjustment_quantity}
+                            helperText={errors.adjustmentQuantity?.message}
+                            error={!!errors.adjustmentQuantity}
                           />
                         )}
                       />
@@ -180,7 +180,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                             Adjustment Type*
                         </Typography>
                         <Controller
-                          name="adjustment_type"
+                          name="adjustmentType"
                           control={control}
                           defaultValue=""
                           render={({ field }) => (
@@ -188,7 +188,7 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                               fullWidth 
                               size='small' 
                               sx={{ minWidth: 224 }}
-                              error={!!errors.adjustment_type}
+                              error={!!errors.adjustmentType}
                             >
                               <Select
                                 {...field}
@@ -208,9 +208,9 @@ function RHDialogBox({ open, handleClose, RHId, onRefresh, showSuccessSnackbar, 
                                 <MenuItem value="restock">restock</MenuItem>
                                 <MenuItem value="return to supplier">return to supplier</MenuItem>
                               </Select>
-                              {errors.adjustment_type && (
+                              {errors.adjustmentType && (
                                 <FormHelperText error sx={{ color: '#f44336' }}>
-                                  {errors.adjustment_type?.message}
+                                  {errors.adjustmentType?.message}
                                 </FormHelperText>
                               )}
                             </FormControl>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Divider, Autocomplete, TextField, Table, TableBody, TableCell, TableHead, TableRow, Box, Typography, Paper, IconButton, TableContainer, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { Delete, AddCircleOutline, RemoveCircleOutline } from '@mui/icons-material';
 import { getAllItems } from '../../Service/Item.api';
@@ -122,22 +122,13 @@ const AddBill = () => {
     if (debounceTimeout) {
       clearTimeout(debounceTimeout);
     }
-  
-    setDebounceTimeout(
-      setTimeout(() => {
-        if (value.length === 10 && /^\d+$/.test(value)) {
-          setPhoneError('');
-          handlePhoneBlur();
-        }
-      }, 500)
-    );
   };
 
 
   const handlePhoneBlur = () => {
     setPhoneTouched(true);
-    if (customerPhoneNumber.length !== 10 || !/^\d+$/.test(customerPhoneNumber)) {
-      setPhoneError("Phone number must be exactly 10 digits.");
+    if (!/^\d+$/.test(customerPhoneNumber)) {
+      setPhoneError("Phone number must be a number.");
     }
   };
 
@@ -147,18 +138,19 @@ const AddBill = () => {
         const timer = setTimeout(async () => {
           try {
             const customer = await getCustomerByPhoneNumber(customerPhoneNumber);
-            if (customer) {
-              setCustomerName(customer.customerName);
-              setCustomerEmail(customer.customerEmail || '');
-              setCustomerAddress(customer.customerAddress || '');
-              setPhoneError('');
-              successSnackbar('Customer exists', snackbarRef);
+            if (customer?.error) {
+              successSnackbar("Customer doesn't exist!", snackbarRef);
+            } else if (customer && Object.keys(customer).length > 0) {
+              setCustomerName(customer.customerName || customerName);
+              setCustomerEmail(customer.customerEmail || customerEmail);
+              setCustomerAddress(customer.customerAddress || customerAddress);
+              successSnackbar('Customer exists!', snackbarRef);
             }
           } catch (error) {
             console.error('Error fetching customer by phone number:', error);
             errorSnackbar('Error fetching customer information', snackbarRef);
           }
-        }, 500);
+        }, 1);
   
         return () => clearTimeout(timer);
       } else if (customerPhoneNumber.length > 0) {
@@ -169,30 +161,24 @@ const AddBill = () => {
 
   const handleProceedToPayment = async () => {
 
-    if (phoneError) {
-      errorSnackbar("Please fix the errors before proceeding to payment", snackbarRef);
-      return;
-    }
+    // if (phoneError) {
+    //   errorSnackbar("Please fix the errors before proceeding to payment", snackbarRef);
+    //   return;
+    // }
 
-    const hasItemsInCart = cart.some((cartItem) => cartItem.item !== null);
-    if (!customerName) {
-      errorSnackbar('Customer name is required', snackbarRef);
-      return;
-    } else if (!customerPhoneNumber) {
-      errorSnackbar('Customer number is required', snackbarRef);
-      return;
-    } else if (!customerAddress) {
-      errorSnackbar('Customer address is required', snackbarRef);
-      return;
-    } else if (!paymentMethod) {
-      errorSnackbar('Payment method is required', snackbarRef);
-      return;
-    }
-
-    if (!hasItemsInCart) {
-      errorSnackbar('Please add at least one item to the cart before proceeding to payment', snackbarRef);
-      return;
-    }
+    // if (!customerName) {
+    //   errorSnackbar('Customer name is required', snackbarRef);
+    //   return;
+    // } else if (!customerPhoneNumber) {
+    //   errorSnackbar('Customer number is required', snackbarRef);
+    //   return;
+    // } else if (!customerAddress) {
+    //   errorSnackbar('Customer address is required', snackbarRef);
+    //   return;
+    // } else if (!paymentMethod) {
+    //   errorSnackbar('Payment method is required', snackbarRef);
+    //   return;
+    // }
 
     const payload = {
       total: totalAmount,
@@ -235,7 +221,7 @@ const AddBill = () => {
               <TableCell sx={{ fontWeight: 'bold', minWidth: 100, width: '15%', paddingLeft: '30px' }}>Quantity</TableCell>
               <TableCell sx={{ fontWeight: 'bold', minWidth: 100, width: '15%' }}>Price</TableCell>
               <TableCell sx={{ fontWeight: 'bold', minWidth: 100, width: '15%' }}>Total</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', minWidth: 100, width: '10%' }}>Delete?</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', minWidth: 100, width: '10%' }}>Delete Item</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -493,6 +479,9 @@ const AddBill = () => {
         variant="contained"
         color="primary"
         onClick={handleProceedToPayment}
+        disabled={
+          !cart.some((cartItem) => cartItem.item !== null) || !customerName.trim() || !customerPhoneNumber.trim() || phoneError || !customerAddress.trim() || !paymentMethod
+        }
         fullWidth
         sx={{
           padding: '12px 0', 

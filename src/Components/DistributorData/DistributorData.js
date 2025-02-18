@@ -121,7 +121,7 @@ export default function DistributorData() {
       <DistributorDialogBox 
         open={DialogOpen} 
         handleClose={handleCloseDialog} 
-        istributorId={distributorId} 
+        distributorId={distributorId} 
         onRefresh={handleRefresh}
         showSuccessSnackbar={showSuccessSnackbar}
         showErrorSnackbar={showErrorSnackbar}
