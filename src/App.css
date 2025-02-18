@@ -72,3 +72,7 @@ html,
 .MuiListItemText-primary {
   color: white;
 }
+
+.MuiInputBase-root {
+  margin-top: 0 !important;
+}

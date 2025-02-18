@@ -5,10 +5,17 @@ import { FormControl, Select, InputLabel } from '@mui/material';
 import { MenuItem } from '@mui/material';
 
 const ItemTable = ({ items, onEdit, onView, sortBy, sortDirection, onSort, status, onStatusChange }) => {
-    
+  const [showLabel, setShowLabel] = useState(true);
   const renderSortIcon = (column) => {
     if (sortBy !== column) return null;
     return sortDirection === 'ASC' ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />;
+  };
+
+  const handleChange = (event) => {
+    onStatusChange(event.target.value);
+    if (showLabel) {
+      setShowLabel(false);
+    }
   };
 
   return (
@@ -57,16 +64,23 @@ const ItemTable = ({ items, onEdit, onView, sortBy, sortDirection, onSort, statu
             </TableCell>
             <TableCell align="center">MRP</TableCell>
             <TableCell align="center">
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 70 }}>
-                <InputLabel>Status</InputLabel>
-                <Select
-                  value={status}
-                  onChange={(e) => onStatusChange(e.target.value)}
-                  label="Status"
-                >
-                  <MenuItem value=""><em>All</em></MenuItem>
-                  <MenuItem value="active">Active</MenuItem>
-                  <MenuItem value="out of stock">Out of Stock</MenuItem>
+            <FormControl variant="standard" sx={{ minWidth: 70 }}>
+                {status === "" && (
+                  <InputLabel
+                    sx={{
+                      transform: 'translate(0, 6px) scale(1)',
+                      fontSize: '14.5px',
+                      fontWeight: 'bold',
+                      color: 'black',
+                    }}
+                  >
+                    Status
+                  </InputLabel>
+                )}
+                <Select sx={{ fontWeight: 'bold', fontSize: '15px' }} value={status} onChange={handleChange} disableUnderline>
+                  <MenuItem sx={{ fontWeight: 'bold' }} value="">All</MenuItem>
+                  <MenuItem sx={{ fontWeight: 'bold' }} value="active">Active</MenuItem>
+                  <MenuItem sx={{ fontWeight: 'bold' }} value="out of stock">Out of Stock</MenuItem>
                 </Select>
               </FormControl>
             </TableCell>

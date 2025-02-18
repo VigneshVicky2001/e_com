@@ -86,11 +86,23 @@ const BillTable = ({ bills, onPayChange, onStatusChange, loading, error, payment
               </TableCell>
               <TableCell sx={{ minWidth: 150 }}>
                 <FormControl variant="standard" sx={{ m: 1, minWidth: 145 }}>
-                  <InputLabel>Payment Method</InputLabel>
+                  {paymentMethod === "" && (
+                    <InputLabel
+                      sx={{
+                        transform: 'translate(0, 6px) scale(1)', 
+                        fontSize: '14px', 
+                        fontWeight: 'bold', 
+                        color: 'black',
+                      }}
+                    >
+                      Payment Method
+                    </InputLabel>
+                  )}
                   <Select
                     value={paymentMethod}
                     onChange={(e) => onPayChange(e.target.value)}
                     label="Payment Method"
+                    disableUnderline
                   >
                     <MenuItem value=""><em>All</em></MenuItem>
                     <MenuItem value="UPI">UPI</MenuItem>
@@ -112,11 +124,23 @@ const BillTable = ({ bills, onPayChange, onStatusChange, loading, error, payment
               <TableCell sx={{ minWidth: 100 }}>Return</TableCell>
               <TableCell sx={{ minWidth: 150 }}>
                 <FormControl variant="standard" sx={{ m: 1, minWidth: 137 }}>
-                  <InputLabel>Payment Status</InputLabel>
+                  {paymentStatus === "" && (
+                    <InputLabel
+                      sx={{
+                        transform: 'translate(0, 6px) scale(1)', 
+                        fontSize: '14px', 
+                        fontWeight: 'bold', 
+                        color: 'black',
+                      }}
+                    >
+                      Payment Status
+                    </InputLabel>
+                  )}
                   <Select
                     value={paymentStatus}
                     onChange={(e) => onStatusChange(e.target.value)}
                     label="Payment Status"
+                    disableUnderline
                   >
                     <MenuItem value=""><em>All</em></MenuItem>
                     <MenuItem value="success">Success</MenuItem>
